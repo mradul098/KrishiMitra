@@ -42,7 +42,7 @@ You have _considerable interactive access_ to your GCP project and Azure resourc
 > It is entirely possible to follow these instructions from a mobile device running iOS or Android or a laptop.
 
 > [!TIP]
-> If you participated in the hacakthon _last year_ with the same personal emaik, you may have saved your password for your SSO account (that will be the same format). Last year's password **won't work on the initial login.**, you have a new Entra account (even with the same ID).
+> If you participated in the hacakthon _last year_ with the same personal email, you may have saved your password for your SSO account (that will be the same format). Last year's password **won't work on the initial login.**, you have a new Entra account (even with the same ID).
 
 ### How do I login? :movie_camera:
 
@@ -432,7 +432,7 @@ $'{
 > [!WARNING]  
 > Your GCP project will be **torn down** if you approach 100% or if you are spending rapidly.
 
-* You have a budget of **EUR ~21**.
+* You have a budget of **EUR ~250**.
   Your _team lead_ will receive _email notifications_ when your actual or _forecast_ spend passes 25%, 50%, 75%, 90% and 100%. If
   you are the team lead **please cascade this information** to your fellow team members.
 * Fairly _severe quotas_ are in place to help manage the above.
