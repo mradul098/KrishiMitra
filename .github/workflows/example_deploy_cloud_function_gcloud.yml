@@ -22,7 +22,7 @@ jobs:
         with:
           export_environment_variables: true
           project_id : hack-team-psd2ce
-          workload_identity_provider: github-2023
+          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
           service_account: infrastructure@hack-team-psd2ce.iam.gserviceaccount.com  # Use your Infrastructure SA to manage resources
 
       - name: 'Set up Cloud SDK'
@@ -60,7 +60,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           token_format: 'id_token'
-          workload_identity_provider: github-2023
+          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
           service_account: workload@hack-team-psd2ce.iam.gserviceaccount.com  # Use your Workload SA to interact with resources
           id_token_audience: ${{ steps.deploy.outputs.url }}
           id_token_include_email: true
