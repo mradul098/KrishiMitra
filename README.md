@@ -27,7 +27,7 @@ Your hackathon environment consists of the following components:
 1. A **Microsoft Azure** resource group for your team, [see here](http://portal.azure.com) which allows you to consume Azure. :cloud:
 1. This **[GitHub repository](https://github.com/db-hackathon/psd2ce)** which you can use to store your code. :bookmark_tabs:
 1. A **Terraform Cloud** workspace [see here](https://app.terraform.io/app/db-hackathon-2025/workspaces/hack-team-psd2ce) allowing you to deploy with [Terraform](https://developer.hashicorp.com/terraform/intro) into [GCP](https://cloud.google.com/docs/terraform). :hammer:
-1. A _namespace_ in a shared **RedHat Openshift** cluster [see here](https://console-openshift-console.apps.dbh.dbhackathon.org/) which can be used to deploy into Azure. :rocket:
+1. A _namespace_ in a shared **RedHat Openshift** cluster [see here](https://console-openshift-console.apps.hackathon.francecentral.aroapp.io) which can be used to deploy into Azure. :rocket:
 1. A **Microsoft Teams** [instance](https://teams.microsoft.com/v2/) with
    a [global support team](https://teams.microsoft.com/l/team/19%3AanjLDL718QMHaZCH0sDgW6dz-Cl8Kcgb8EJvNVVqvo41%40thread.tacv2/conversations?groupId=7c337606-8e36-414f-946e-09ac1161aca5&tenantId=a8f249fb-91ee-4dd5-bf60-d1ec1330b078) and a dedicated MS Team for each hackathon team. :speech_balloon:
 
@@ -114,7 +114,7 @@ Once logged in, you should be able to see a _workspace_ named after your team pr
 
 #### [Redhat OpenShift](TBC) :rocket:
 
-TBC
+Visit the [OpenShift Console](https://console-openshift-console.apps.hackathon.francecentral.aroapp.io), and selected Log in with **AAD** (Azure Active Directory a.k.a Entra).
 
 #### [Microsoft Teams](http://teams.microsoft.com) :speech_balloon:
 
@@ -537,27 +537,7 @@ TBC
 
 ### Limitations & Restrictions :honey_pot:
 
-Detailed information about accessing the OpenShift environment and how to deploy the Generative AI application on
-OpenShift is available [here](https://db-hack-guidance-redhat2024.apps.hackathon.uksouth.aroapp.io/db-hack-rh/4.15/index.html).
-
-No SSL cert has been provisioned, so you'll have to risk the warnings.
-On that page, choose to `Log in with the githubidp` option and use the GitHub handle you signed up with to complete
-the authentication.
-
-Once logged in, you will have access to two namespaces; one personal named after your GitHub handle, and one shared
-named after your team.
-
-The team namespace has a special Kubernetes secret named `gcp-access`.
-
-The value of this secret is an automatically-refresh OAuth 2.0 token for your workload SA.
-
-Use this to authenticate with GCP APIs from your workloads.
-
-Each token expires after one hour, but the value of the secret is automatically refreshed.
-
-Your application should tolerate having to refresh the token from the Kubernetes secret.
-
-When it detects an expired token, simply access the Kubernetes secret again to get a fresh one.
+TBC
 
 ### Interactive Access :computer:
 
