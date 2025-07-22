@@ -20,7 +20,7 @@ jobs:
         with:
           export_environment_variables: true
           project_id : hack-team-psd2ce
-          workload_identity_provider: github-2023
+          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
           service_account: infrastructure@hack-team-psd2ce.iam.gserviceaccount.com
 
       - name: 'Set up Cloud SDK'
