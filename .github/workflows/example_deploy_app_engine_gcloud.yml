@@ -22,7 +22,7 @@ jobs:
         with:
           export_environment_variables: true
           project_id : hack-team-psd2ce
-          workload_identity_provider: github-2023
+          workload_identity_provider: projects/785558430619/locations/global/workloadIdentityPools/github-2023/providers/github-2023
           service_account: infrastructure@hack-team-psd2ce.iam.gserviceaccount.com # Use your Infrastructure SA to manage resources
 
       - name: 'Set up Cloud SDK'
@@ -39,7 +39,7 @@ jobs:
               --service-account="${WORKLOAD_SA_EMAIL}"  # Use your Workload SA to attach to resources
           else
             gcloud app create \
-              --region=europe-west1 \
+              --region=europe-west \
               --service-account="${WORKLOAD_SA_EMAIL}"  # Use your Workload SA to attach to resources
           fi
 
