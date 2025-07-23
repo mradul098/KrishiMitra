@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KrishiMitra - Login/Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/enhanced.css" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .auth-card {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .role-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        .role-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body class="auth-container">
+    <!-- Header -->
+    <nav class="bg-transparent text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-seedling text-3xl"></i>
+                <h1 class="text-3xl font-bold">KrishiMitra</h1>
+            </div>
+            <p class="text-lg">Financial Inclusion Platform for Farmers</p>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="flex items-center justify-center min-h-screen px-4 py-8">
+        <div class="auth-card rounded-2xl p-8 w-full max-w-2xl">
+            <!-- Toggle Buttons -->
+            <div class="flex mb-8">
+                <button id="loginTab" class="flex-1 py-3 px-6 bg-green-600 text-white rounded-l-lg font-semibold">
+                    Login
+                </button>
+                <button id="registerTab" class="flex-1 py-3 px-6 bg-gray-200 text-gray-700 rounded-r-lg font-semibold">
+                    Register
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="space-y-6">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Welcome Back!</h2>
+                    <p class="text-gray-600">Sign in to your account</p>
+                </div>
+
+                <form id="loginFormElement" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email" id="loginEmail" required
+                               class="enhanced-input w-full" 
+                               placeholder="Enter your email">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="loginPassword" required
+                               class="enhanced-input w-full" 
+                               placeholder="Enter your password">
+                    </div>
+
+                    <button type="submit" class="enhanced-btn w-full py-3 mt-6">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 mb-2">Demo Credentials:</h3>
+                    <div class="text-sm text-blue-700 space-y-1">
+                        <p><strong>Farmer:</strong> farmer@demo.com / password123</p>
+                        <p><strong>Warehouse Manager:</strong> warehouse@demo.com / password123</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="space-y-6 hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Join KrishiMitra</h2>
+                    <p class="text-gray-600">Create your account to get started</p>
+                </div>
+
+                <!-- Role Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">I am a:</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="role-card border-2 border-gray-200 rounded-lg p-4 text-center" data-role="farmer">
+                            <i class="fas fa-user-farmer text-3xl text-green-600 mb-2"></i>
+                            <h3 class="font-semibold">Farmer</h3>
+                            <p class="text-sm text-gray-600">Access loans, auctions, and warehouse services</p>
+                        </div>
+                        <div class="role-card border-2 border-gray-200 rounded-lg p-4 text-center" data-role="warehouse_manager">
+                            <i class="fas fa-warehouse text-3xl text-blue-600 mb-2"></i>
+                            <h3 class="font-semibold">Warehouse Manager</h3>
+                            <p class="text-sm text-gray-600">Manage crop deposits and generate WHRs</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="registerFormElement" class="space-y-4">
+                    <input type="hidden" id="selectedRole" value="">
+                    
+                    <!-- Basic Details -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                            <input type="text" id="firstName" required
+                                   class="enhanced-input w-full" 
+                                   placeholder="First name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                            <input type="text" id="lastName" required
+                                   class="enhanced-input w-full" 
+                                   placeholder="Last name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email" id="registerEmail" required
+                               class="enhanced-input w-full" 
+                               placeholder="Enter your email">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" id="phone" required
+                               class="enhanced-input w-full" 
+                               placeholder="Enter your phone number">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="registerPassword" required
+                               class="enhanced-input w-full" 
+                               placeholder="Create a password (min 6 characters)">
+                    </div>
+
+                    <!-- Address -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                            <input type="text" id="city" required
+                                   class="enhanced-input w-full" 
+                                   placeholder="City">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                            <select id="state" required class="enhanced-input w-full">
+                                <option value="">Select State</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Role-specific fields -->
+                    <div id="farmerFields" class="hidden space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Farm Size (acres)</label>
+                                <input type="number" id="farmSize"
+                                       class="enhanced-input w-full" 
+                                       placeholder="Farm size in acres">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Farming Experience (years)</label>
+                                <input type="number" id="farmingExperience"
+                                       class="enhanced-input w-full" 
+                                       placeholder="Years of experience">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Primary Crops</label>
+                            <select id="primaryCrops" multiple class="enhanced-input w-full h-20">
+                                <option value="wheat">Wheat</option>
+                                <option value="rice">Rice</option>
+                                <option value="cotton">Cotton</option>
+                                <option value="soybean">Soybean</option>
+                                <option value="corn">Corn</option>
+                                <option value="sugarcane">Sugarcane</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple crops</p>
+                        </div>
+                    </div>
+
+                    <div id="warehouseFields" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Warehouse Name</label>
+                            <input type="text" id="warehouseName"
+                                   class="enhanced-input w-full" 
+                                   placeholder="Warehouse name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Storage Capacity (quintals)</label>
+                            <input type="number" id="capacity"
+                                   class="enhanced-input w-full" 
+                                   placeholder="Total storage capacity">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="enhanced-btn w-full py-3 mt-6">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Create Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-700">Processing...</p>
+        </div>
+    </div>
+
+    <script src="/js/particles.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html> 

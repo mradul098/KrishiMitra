@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Manager Dashboard - KrishiMitra</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/enhanced.css" rel="stylesheet">
+    <style>
+        .dashboard-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+        }
+        .sidebar {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-item:hover {
+            background: rgba(79, 70, 229, 0.1);
+            transform: translateX(5px);
+        }
+        .nav-item.active {
+            background: rgba(79, 70, 229, 0.2);
+            border-right: 3px solid #4f46e5;
+        }
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .status-approved {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .status-rejected {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-warehouse text-2xl text-blue-600"></i>
+                        <h1 class="text-2xl font-bold text-gray-800">KrishiMitra</h1>
+                    </div>
+                    <span class="text-sm text-gray-500">|</span>
+                    <span class="text-lg font-medium text-gray-700">Warehouse Manager</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Warehouse Info -->
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Storage Utilization</p>
+                        <p class="text-lg font-bold text-blue-600" id="storageUtilization">0%</p>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-700" id="userName">Loading...</p>
+                            <p class="text-xs text-gray-500" id="warehouseName">Warehouse Name</p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <button onclick="logout()" class="text-red-600 hover:text-red-800 ml-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 min-h-screen border-r border-gray-200 p-4">
+            <div class="space-y-2">
+                <div class="nav-item active px-4 py-3 rounded-lg" data-section="overview">
+                    <i class="fas fa-chart-pie mr-3"></i>Overview
+                </div>
+                <div class="nav-item px-4 py-3 rounded-lg" data-section="pending-deposits">
+                    <i class="fas fa-clock mr-3"></i>Pending Deposits
+                </div>
+                <div class="nav-item px-4 py-3 rounded-lg" data-section="generate-whr">
+                    <i class="fas fa-file-contract mr-3"></i>Generate WHR
+                </div>
+                <div class="nav-item px-4 py-3 rounded-lg" data-section="inventory">
+                    <i class="fas fa-boxes mr-3"></i>Inventory Management
+                </div>
+                <div class="nav-item px-4 py-3 rounded-lg" data-section="whr-history">
+                    <i class="fas fa-history mr-3"></i>WHR History
+                </div>
+                <div class="nav-item px-4 py-3 rounded-lg" data-section="warehouse-settings">
+                    <i class="fas fa-cog mr-3"></i>Warehouse Settings
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <!-- Overview Section -->
+            <div id="overview" class="section">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome, <span id="welcomeName">Manager</span>!</h2>
+                    <p class="text-gray-600">Manage your warehouse operations and generate WHRs</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card dashboard-card rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm opacity-90">Total Capacity</p>
+                                <p class="text-2xl font-bold" id="totalCapacity">0</p>
+                            </div>
+                            <i class="fas fa-warehouse text-3xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card dashboard-card rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm opacity-90">Occupied Space</p>
+                                <p class="text-2xl font-bold" id="occupiedSpace">0</p>
+                            </div>
+                            <i class="fas fa-boxes text-3xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card dashboard-card rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm opacity-90">Active WHRs</p>
+                                <p class="text-2xl font-bold" id="activeWHRCount">0</p>
+                            </div>
+                            <i class="fas fa-file-contract text-3xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card dashboard-card rounded-xl p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm opacity-90">Pending Requests</p>
+                                <p class="text-2xl font-bold" id="pendingRequests">0</p>
+                            </div>
+                            <i class="fas fa-clock text-3xl opacity-80"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="dashboard-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                            <i class="fas fa-plus-circle text-blue-600 mr-2"></i>New Deposit
+                        </h3>
+                        <p class="text-gray-600 mb-4">Process new crop deposits from farmers</p>
+                        <button onclick="switchSection('pending-deposits')" class="enhanced-btn px-4 py-2 w-full">
+                            View Requests
+                        </button>
+                    </div>
+
+                    <div class="dashboard-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                            <i class="fas fa-file-contract text-green-600 mr-2"></i>Generate WHR
+                        </h3>
+                        <p class="text-gray-600 mb-4">Create warehouse receipts for approved deposits</p>
+                        <button onclick="switchSection('generate-whr')" class="enhanced-btn px-4 py-2 w-full">
+                            Create WHR
+                        </button>
+                    </div>
+
+                    <div class="dashboard-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                            <i class="fas fa-boxes text-purple-600 mr-2"></i>Inventory
+                        </h3>
+                        <p class="text-gray-600 mb-4">Monitor storage capacity and inventory</p>
+                        <button onclick="switchSection('inventory')" class="enhanced-btn px-4 py-2 w-full">
+                            View Inventory
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">Recent Activity</h3>
+                    <div id="recentActivity" class="space-y-3">
+                        <!-- Recent activities will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Deposits Section -->
+            <div id="pending-deposits" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Pending Deposit Requests</h2>
+                    <p class="text-gray-600">Review and approve crop deposits from farmers</p>
+                </div>
+
+                <!-- Filter Options -->
+                <div class="dashboard-card rounded-xl p-4 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm font-medium text-gray-700">Filter by:</span>
+                        <select id="cropTypeFilter" class="enhanced-input">
+                            <option value="">All Crops</option>
+                            <option value="wheat">Wheat</option>
+                            <option value="rice">Rice</option>
+                            <option value="cotton">Cotton</option>
+                            <option value="soybean">Soybean</option>
+                        </select>
+                        <button onclick="filterDeposits()" class="enhanced-btn px-4 py-2">
+                            <i class="fas fa-filter mr-2"></i>Apply Filter
+                        </button>
+                        <button onclick="addDemoDeposit()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            <i class="fas fa-plus mr-2"></i>Add Demo Request
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Deposits List -->
+                <div id="depositsList" class="space-y-4">
+                    <!-- Deposit requests will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Generate WHR Section -->
+            <div id="generate-whr" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Generate Warehouse Receipt</h2>
+                    <p class="text-gray-600">Create WHR for approved crop deposits</p>
+                </div>
+
+                <!-- WHR Generation Form -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <form id="whrForm" class="space-y-6">
+                        <!-- Farmer Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Farmer</label>
+                            <select id="farmerSelect" required class="enhanced-input w-full">
+                                <option value="">Choose farmer with approved deposit</option>
+                            </select>
+                        </div>
+
+                        <!-- Crop Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Crop Type</label>
+                                <select id="cropType" required class="enhanced-input w-full">
+                                    <option value="">Select crop type</option>
+                                    <option value="wheat">Wheat</option>
+                                    <option value="rice">Rice</option>
+                                    <option value="cotton">Cotton</option>
+                                    <option value="soybean">Soybean</option>
+                                    <option value="corn">Corn</option>
+                                    <option value="sugarcane">Sugarcane</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Variety</label>
+                                <input type="text" id="variety" required class="enhanced-input w-full" 
+                                       placeholder="e.g., HD-2967">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity (quintals)</label>
+                                <input type="number" id="quantity" required class="enhanced-input w-full" 
+                                       placeholder="Enter quantity">
+                            </div>
+                        </div>
+
+                        <!-- Quality Assessment -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Quality Grade</label>
+                                <select id="qualityGrade" required class="enhanced-input w-full">
+                                    <option value="">Select grade</option>
+                                    <option value="A">Grade A (Premium)</option>
+                                    <option value="B">Grade B (Standard)</option>
+                                    <option value="C">Grade C (Fair)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Moisture Content (%)</label>
+                                <input type="number" id="moistureContent" step="0.1" class="enhanced-input w-full" 
+                                       placeholder="e.g., 12.5">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Price per Quintal (₹)</label>
+                                <input type="number" id="pricePerQuintal" required class="enhanced-input w-full" 
+                                       placeholder="Current market price">
+                            </div>
+                        </div>
+
+                        <!-- Storage Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Storage Period (months)</label>
+                                <select id="storagePeriod" class="enhanced-input w-full">
+                                    <option value="3">3 months</option>
+                                    <option value="6" selected>6 months</option>
+                                    <option value="9">9 months</option>
+                                    <option value="12">12 months</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Storage Charges (₹/quintal/month)</label>
+                                <input type="number" id="storageCharges" class="enhanced-input w-full" 
+                                       placeholder="Storage rate" value="25">
+                            </div>
+                        </div>
+
+                        <!-- Value Calculation Display -->
+                        <div id="valueCalculation" class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">Estimated Values:</h4>
+                            <div class="grid grid-cols-2 gap-4 text-sm text-blue-700">
+                                <div>Total Crop Value: <span id="totalCropValue">₹0</span></div>
+                                <div>Storage Charges: <span id="totalStorageCharges">₹0</span></div>
+                                <div>Insurance Value: <span id="insuranceValue">₹0</span></div>
+                                <div class="font-bold">Net WHR Value: <span id="netWHRValue">₹0</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex space-x-4">
+                            <button type="submit" class="enhanced-btn px-6 py-3 flex-1">
+                                <i class="fas fa-file-contract mr-2"></i>Generate WHR
+                            </button>
+                            <button type="button" onclick="resetWHRForm()" class="bg-gray-500 text-white px-6 py-3 rounded hover:bg-gray-600">
+                                <i class="fas fa-undo mr-2"></i>Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Inventory Section -->
+            <div id="inventory" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Inventory Management</h2>
+                    <p class="text-gray-600">Monitor storage capacity and current inventory</p>
+                </div>
+
+                <!-- Capacity Overview -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="dashboard-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Storage Capacity</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-sm">
+                                <span>Total Capacity:</span>
+                                <span class="font-medium" id="inventoryTotalCapacity">10,000 quintals</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Used Space:</span>
+                                <span class="font-medium text-blue-600" id="inventoryUsedSpace">0 quintals</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Available Space:</span>
+                                <span class="font-medium text-green-600" id="inventoryAvailableSpace">10,000 quintals</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-4">
+                                <div id="capacityBar" class="bg-blue-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Crop Distribution</h3>
+                        <div id="cropDistribution" class="space-y-2">
+                            <!-- Crop distribution will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Inventory -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">Current Inventory</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">WHR ID</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Farmer</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Crop</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Quantity</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Grade</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Deposit Date</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTable" class="divide-y divide-gray-200">
+                                <!-- Inventory items will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WHR History Section -->
+            <div id="whr-history" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">WHR History</h2>
+                    <p class="text-gray-600">View all generated warehouse receipts</p>
+                </div>
+
+                <!-- History Filters -->
+                <div class="dashboard-card rounded-xl p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <select id="historyStatusFilter" class="enhanced-input w-full">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="locked_for_loan">Locked for Loan</option>
+                                <option value="sold">Sold</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                            <input type="date" id="historyFromDate" class="enhanced-input w-full">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                            <input type="date" id="historyToDate" class="enhanced-input w-full">
+                        </div>
+                        <div class="pt-6">
+                            <button onclick="filterWHRHistory()" class="enhanced-btn px-6 py-2 w-full">
+                                Filter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WHR History List -->
+                <div id="whrHistoryList" class="space-y-4">
+                    <!-- WHR history will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Warehouse Settings Section -->
+            <div id="warehouse-settings" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Warehouse Settings</h2>
+                    <p class="text-gray-600">Manage your warehouse configuration</p>
+                </div>
+
+                <!-- Settings Form -->
+                <div class="dashboard-card rounded-xl p-6">
+                    <form id="settingsForm" class="space-y-6">
+                        <!-- Basic Information -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Basic Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Warehouse Name</label>
+                                    <input type="text" id="settingsWarehouseName" class="enhanced-input w-full" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Warehouse ID</label>
+                                    <input type="text" id="settingsWarehouseId" class="enhanced-input w-full" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Capacity & Rates -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Capacity & Rates</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Capacity (quintals)</label>
+                                    <input type="number" id="settingsCapacity" class="enhanced-input w-full">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Storage Rate (₹/quintal/month)</label>
+                                    <input type="number" id="settingsStorageRate" class="enhanced-input w-full">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Processing Fee (₹)</label>
+                                    <input type="number" id="settingsProcessingFee" class="enhanced-input w-full">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Facilities -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Available Facilities</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="facilityColdstorage" class="mr-2">
+                                    <span class="text-sm">Cold Storage</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="facilityQualityTesting" class="mr-2">
+                                    <span class="text-sm">Quality Testing</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="facilityFumigation" class="mr-2">
+                                    <span class="text-sm">Fumigation</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="facilityPestControl" class="mr-2">
+                                    <span class="text-sm">Pest Control</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="facilityDrying" class="mr-2">
+                                    <span class="text-sm">Grain Drying</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="facilityCleaning" class="mr-2">
+                                    <span class="text-sm">Cleaning</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Contact Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Manager Name</label>
+                                    <input type="text" id="settingsManagerName" class="enhanced-input w-full" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Phone</label>
+                                    <input type="tel" id="settingsContactPhone" class="enhanced-input w-full">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div>
+                            <button type="submit" class="enhanced-btn px-6 py-3">
+                                <i class="fas fa-save mr-2"></i>Save Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-700">Processing...</p>
+        </div>
+    </div>
+
+    <!-- WHR Generation Success Modal -->
+    <div id="whrSuccessModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">WHR Generated Successfully!</h3>
+                <p class="text-gray-600 mb-4">The warehouse receipt has been created and sent to the farmer's DocuLocker.</p>
+                <div id="whrDetails" class="bg-gray-50 p-4 rounded-lg mb-4 text-left">
+                    <!-- WHR details will be shown here -->
+                </div>
+                <button onclick="closeWHRModal()" class="enhanced-btn px-6 py-2">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/particles.js"></script>
+    <script src="/js/warehouse-dashboard.js"></script>
+</body>
+</html> 
