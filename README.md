@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # KrishiMitra - Complete Financial Inclusion Platform for Farmers 🌾
 
 An innovative financial inclusion platform that empowers farmers with AI-driven financial services, weather insights, and market information through an intelligent chatbot and comprehensive WHR-based lending system.
@@ -253,3 +254,6 @@ This platform demonstrates:
 - **Scalability potential** for millions of users
 
 **Ready to transform Indian agriculture through financial inclusion!** 🌾💰🚀 
+=======
+# KrishiMitra
+>>>>>>> 06c7707ec00ce7b5950b0508106b36a5d3dbd2bf
