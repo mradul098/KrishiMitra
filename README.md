@@ -46,7 +46,13 @@ You have _considerable interactive access_ to your GCP project and Azure resourc
 
 ### How do I login? :movie_camera:
 
-https://github.com/user-attachments/assets/808bbb0e-cc9c-410b-b70b-2cc93f376100
+(The following is split into 3 videos due to a file size restrction of 100MB in GitHub per video)
+
+https://github.com/user-attachments/assets/d28a9423-4989-4f28-acb8-34e26c2fb319
+
+https://github.com/user-attachments/assets/a8302be4-c47d-4792-9dfd-d88d1f67dc6d
+
+https://github.com/user-attachments/assets/7587c85f-631f-40ab-914e-6a49454f2098
 
 ### Register in the Plus You registration portal :clipboard:
 
@@ -386,7 +392,8 @@ Examples:
     * [Terraform](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/notebooks_instance#service_account)
 * [Workflows](https://cloud.google.com/workflows/docs/authentication#deploy_a_workflow_with_a_custom_service_account)
     * [Terraform](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/workflows_workflow#service_account)
-* [Vertex AI](https://cloud.google.com/vertex-ai/docs/general/custom-service-account#attach)
+* [Vertex AI Workbench instances](https://cloud.google.com/vertex-ai/docs/workbench/instances/create)
+* [Vertex AI generally](https://cloud.google.com/vertex-ai/docs/general/custom-service-account#attach)
     * Vertex AI's Console UI does not always expose the field necessary to specify a user managed SA.  
       However, most such screens have a `View Code` button in the top right.
       The generated code is populated with the fields you entered in the UI.
