@@ -70,6 +70,11 @@
                     <a href="#schemes" class="text-gray-600 hover:text-blue-600 transition">Government Schemes</a>
                     <a href="#about" class="text-gray-600 hover:text-blue-600 transition">About</a>
                     <a href="#contact" class="text-gray-600 hover:text-blue-600 transition">Contact</a>
+                    <select class="language-selector bg-gray-100 border rounded px-2 py-1 text-sm" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी</option>
+                        <option value="mr">मराठी</option>
+                    </select>
                     <a href="auth.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Login</a>
                 </div>
                 <div class="md:hidden">
@@ -119,10 +124,10 @@
                     </div>
                     
                     <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                        Your Complete <span class="text-yellow-400">Agricultural Finance</span> Ecosystem
+                        <span data-translate="tagline">Your Complete <span class="text-yellow-400">Agricultural Finance</span> Ecosystem</span>
                     </h1>
                     
-                    <p class="text-xl mb-8 opacity-90">
+                    <p class="text-xl mb-8 opacity-90" data-translate="subtitle">
                         Connecting 146 Million Farmers to ₹15 Lakh Crore Financial Opportunities through integrated government schemes, WHR-based lending, and AI-powered advisory.
                     </p>
 
@@ -632,6 +637,8 @@
 
     <!-- Scripts -->
     <script src="js/particles.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/voice-manager.js"></script>
     <script>
         // Initialize particles
         window.addEventListener('load', () => {
@@ -739,6 +746,13 @@
              const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
              if (modal) {
                  modal.remove();
+             }
+         }
+
+         // Language change function
+         function changeLanguage(language) {
+             if (window.languageManager) {
+                 window.languageManager.setLanguage(language);
              }
          }
 

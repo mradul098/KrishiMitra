@@ -6,6 +6,16 @@ let chatbotOpen = false;
 document.addEventListener('DOMContentLoaded', () => {
     initializeDashboard();
     setupEventListeners();
+    
+    // Initialize translation system
+    if (window.languageManager) {
+        window.languageManager.applyTranslations();
+    }
+    
+    // Initialize voice system
+    if (window.voiceManager) {
+        console.log('Voice features available:', window.voiceManager.isSupported());
+    }
 });
 
 async function initializeDashboard() {
@@ -873,12 +883,17 @@ async function sendChatMessage() {
     
     if (!message) return;
     
+    // Detect language (simple detection)
+    const language = detectLanguage(message);
+    
     // Add user message to chat
     addChatMessage(message, 'user');
     input.value = '';
     
-    // Show typing indicator
-    addChatMessage('Typing...', 'bot', true);
+    // Show enhanced typing indicator
+    const typingText = language === 'hi' ? 'टाइप कर रहा है...' : 
+                      language === 'mr' ? 'टाइप करत आहे...' : 'Typing...';
+    addChatMessage(typingText, 'bot', true);
     
     try {
         const response = await fetch('/api/chat', {
@@ -887,24 +902,91 @@ async function sendChatMessage() {
             credentials: 'include',
             body: JSON.stringify({ 
                 message,
+                language,
+                location: currentUser?.profile?.address?.city || 'Sonipat',
                 context: 'farmer_dashboard',
-                user: currentUser
+                user: currentUser,
+                threadId: window.chatThreadId // Maintain conversation context
             })
         });
         
         if (response.ok) {
             const data = await response.json();
+            // Store thread ID for conversation continuity
+            window.chatThreadId = data.threadId;
+            
             // Remove typing indicator
             removeLastChatMessage();
             addChatMessage(data.message, 'bot');
         } else {
             removeLastChatMessage();
-            addChatMessage('Sorry, I encountered an error. Please try again.', 'bot');
+            const errorMsg = language === 'hi' ? 'माफ करें, कोई त्रुटि हुई। कृपया पुनः प्रयास करें।' :
+                           language === 'mr' ? 'माफ करा, काही त्रुटी झाली. कृपया पुन्हा प्रयत्न करा.' :
+                           'Sorry, I encountered an error. Please try again.';
+            addChatMessage(errorMsg, 'bot');
         }
     } catch (error) {
         removeLastChatMessage();
-        addChatMessage('Sorry, I could not connect. Please try again.', 'bot');
+        const errorMsg = language === 'hi' ? 'कनेक्शन नहीं हो सका। कृपया पुनः प्रयास करें।' :
+                       language === 'mr' ? 'कनेक्शन होऊ शकले नाही. कृपया पुन्हा प्रयत्न करा.' :
+                       'Sorry, I could not connect. Please try again.';
+        addChatMessage(errorMsg, 'bot');
     }
+}
+
+// Simple language detection function
+function detectLanguage(text) {
+    // Check manual language selection first
+    const selectedLang = document.getElementById('chatLanguage')?.value;
+    if (selectedLang && selectedLang !== 'auto') {
+        return selectedLang;
+    }
+    
+    // Auto-detect from text
+    if (/[\u0900-\u097F]/.test(text)) {
+        // Check for specific Marathi words/patterns
+        if (text.includes('काय') || text.includes('कसे') || text.includes('कोणत्या')) {
+            return 'mr'; // Marathi
+        }
+        return 'hi'; // Hindi
+    }
+    return 'en'; // English
+}
+
+// Update chat language and interface
+function updateChatLanguage() {
+    const language = document.getElementById('chatLanguage').value;
+    const input = document.getElementById('chatInput');
+    
+    // Update placeholder text based on selected language
+    const placeholders = {
+        'en': 'Ask me anything...',
+        'hi': 'कुछ भी पूछें...',
+        'mr': 'काहीही विचारा...'
+    };
+    
+    input.placeholder = placeholders[language] || placeholders['en'];
+    
+    // Add a system message about language change
+    const greetings = {
+        'en': 'Language switched to English. How can I help you?',
+        'hi': 'भाषा हिन्दी में बदल गई है। मैं आपकी कैसे सहायता कर सकता हूँ?',
+        'mr': 'भाषा मराठीत बदलली आहे. मी तुमची कशी मदत करू शकतो?'
+    };
+    
+    // Clear previous conversation context when language changes
+    window.chatThreadId = null;
+    
+    // Optionally add greeting message
+    if (language !== 'en') {
+        addChatMessage(greetings[language], 'bot');
+    }
+}
+
+// Quick question function for demo purposes
+function quickQuestion(question) {
+    document.getElementById('chatInput').value = question;
+    sendChatMessage();
 }
 
 function addChatMessage(message, sender, isTyping = false) {
@@ -996,4 +1078,42 @@ async function logout() {
         console.error('Logout error:', error);
         window.location.href = '/auth.html';
     }
-} 
+}
+
+// Language change function
+function changeLanguage(language) {
+    if (window.languageManager) {
+        window.languageManager.setLanguage(language);
+    }
+}
+
+// Voice integration functions
+function speakLastMessage() {
+    const messages = document.querySelectorAll('#chatbotContent .mb-3');
+    const lastBotMessage = Array.from(messages).reverse().find(msg => 
+        msg.querySelector('.bg-gray-100')
+    );
+    
+    if (lastBotMessage && window.voiceManager) {
+        const text = lastBotMessage.querySelector('.bg-gray-100').textContent;
+        window.voiceManager.speak(text);
+    }
+}
+
+// Enhanced voice input integration
+if (typeof window !== 'undefined') {
+    window.addEventListener('load', () => {
+        if (window.voiceManager) {
+            // Override voice manager's speech result handler for farmer dashboard
+            const originalSpeechResult = window.voiceManager.onSpeechResult;
+            window.voiceManager.onSpeechResult = function(result) {
+                console.log('Voice input result:', result);
+                const chatInput = document.getElementById('chatInput');
+                if (chatInput) {
+                    chatInput.value = result;
+                    sendChatMessage();
+                }
+            };
+        }
+    });
+}

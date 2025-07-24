@@ -70,13 +70,25 @@
                         <h1 class="text-2xl font-bold text-gray-800">KrishiMitra</h1>
                     </div>
                     <span class="text-sm text-gray-500">|</span>
-                    <span class="text-lg font-medium text-gray-700">Farmer Dashboard</span>
+                    <span class="text-lg font-medium text-gray-700" data-translate="dashboard">Farmer Dashboard</span>
                 </div>
                 
                 <div class="flex items-center space-x-4">
+                    <!-- Language Selector -->
+                    <select class="language-selector bg-gray-100 border rounded px-3 py-1 text-sm" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी</option>
+                        <option value="mr">मराठी</option>
+                    </select>
+                    
+                    <!-- Voice Controls -->
+                    <button id="voiceInputBtn" onclick="toggleVoiceInput()" class="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-1" title="Voice Input">
+                        <i class="fas fa-microphone"></i>
+                        <span class="btn-text hidden lg:inline text-xs" data-translate="voiceInput">Voice</span>
+                    </button>
                     <!-- Account Balance -->
                     <div class="text-right">
-                        <p class="text-sm text-gray-500">Account Balance</p>
+                        <p class="text-sm text-gray-500" data-translate="accountBalance">Account Balance</p>
                         <p class="text-lg font-bold text-green-600" id="accountBalance">₹0</p>
                     </div>
                     
@@ -459,23 +471,44 @@
     <!-- Chatbot Panel -->
     <div id="chatbotPanel" class="chatbot-panel dashboard-card rounded-l-xl">
         <div class="bg-green-600 text-white p-4 rounded-tl-xl">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center mb-2">
                 <h3 class="font-semibold">KrishiMitra Assistant</h3>
                 <button onclick="toggleChatbot()" class="text-white hover:text-gray-200">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+            <div class="flex items-center space-x-2 text-sm">
+                <span>Language:</span>
+                <select id="chatLanguage" class="bg-green-700 text-white rounded px-2 py-1 text-xs border-none" onchange="updateChatLanguage()">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="mr">मराठी</option>
+                </select>
+            </div>
         </div>
         <div id="chatbotContent" class="h-96 p-4 overflow-y-auto">
-            <div class="text-center text-gray-500 mt-20">
+            <div class="text-center text-gray-500 mt-8">
                 <i class="fas fa-robot text-4xl mb-4"></i>
-                <p>Hi! I'm your farming assistant. How can I help you today?</p>
+                <p class="mb-4">Hi! I'm your farming assistant. How can I help you today?</p>
+                <div class="text-xs space-y-1 text-left max-w-xs mx-auto">
+                    <p class="font-semibold">Try asking:</p>
+                    <p class="cursor-pointer hover:text-green-600" onclick="quickQuestion('How can I take loans against my crop?')">• How to get crop loans?</p>
+                    <p class="cursor-pointer hover:text-green-600" onclick="quickQuestion('What are today\'s wheat prices?')">• Today's wheat prices?</p>
+                    <p class="cursor-pointer hover:text-green-600" onclick="quickQuestion('How to use this app for financial planning?')">• Financial planning help?</p>
+                    <p class="cursor-pointer hover:text-green-600" onclick="quickQuestion('मुझे वित्तीय सलाह चाहिए')">• मुझे वित्तीय सलाह चाहिए</p>
+                </div>
             </div>
         </div>
         <div class="p-4 border-t">
             <div class="flex space-x-2">
                 <input type="text" id="chatInput" class="enhanced-input flex-1" 
-                       placeholder="Ask me anything..." onkeypress="handleChatKeyPress(event)">
+                       placeholder="Ask me anything..." onkeypress="handleChatKeyPress(event)" data-translate="askAnything">
+                <button id="voiceChatBtn" onclick="toggleVoiceInput()" class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition" title="Voice Input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button id="speakerBtn" onclick="speakLastMessage()" class="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition" title="Speak Response">
+                    <i class="fas fa-volume-up"></i>
+                </button>
                 <button onclick="sendChatMessage()" class="enhanced-btn px-4 py-2">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -492,6 +525,8 @@
     </div>
 
     <script src="/js/particles.js"></script>
+    <script src="/js/translations.js"></script>
+    <script src="/js/voice-manager.js"></script>
     <script src="/js/farmer-dashboard.js"></script>
 </body>
 </html> 
