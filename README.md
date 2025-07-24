@@ -182,7 +182,7 @@ Every team member has the following roles at the project level:
 * roles/monitoring.editor
 * roles/notebooks.admin
 * roles/notebooks.legacyViewer
-* roles/oauthconfig.viewer
+* roles/oauthconfig.editor
 * roles/pubsub.editor
 * roles/retail.admin
 * roles/run.admin
