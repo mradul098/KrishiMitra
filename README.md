@@ -138,7 +138,6 @@ The following APIs have been activated on your project. You cannot activate othe
 
 **Permissions:**
 Every team member has the following roles at the project level:
-* organizations/984428091370/roles/serviceAccountMetadataViewer
 * roles/aiplatform.admin
 * roles/aiplatform.migrator
 * roles/aiplatform.tensorboardWebAppUser
@@ -237,7 +236,7 @@ Workload SA (`workload@hack-team-psd2ce.iam.gserviceaccount.com`): Attach this t
 * roles/dialogflow.reader
 * roles/discoveryengine.admin
 * roles/discoveryengine.notebookOwner
-* roles/documentai.apiUser
+* roles/documentai.viewer
 * roles/errorreporting.writer
 * roles/eventarc.connectionPublisher
 * roles/eventarc.eventReceiver
