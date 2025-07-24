@@ -895,6 +895,46 @@ async function sendChatMessage() {
                       language === 'mr' ? 'टाइप करत आहे...' : 'Typing...';
     addChatMessage(typingText, 'bot', true);
     
+    // First check if this is an actionable command
+    console.log('Checking intent for message:', message);
+    console.log('chatbotActionService available:', !!window.chatbotActionService);
+    
+    if (window.chatbotActionService) {
+        const intent = window.chatbotActionService.parseIntent(message);
+        console.log('Detected intent:', intent);
+        
+        if (intent !== 'general') {
+            // Handle action
+            try {
+                console.log('Executing action for intent:', intent);
+                const actionResult = await window.chatbotActionService.executeAction(intent, message);
+                console.log('Action result:', actionResult);
+                
+                if (actionResult) {
+                    // Remove typing indicator
+                    removeLastChatMessage();
+                    
+                    // Render action result
+                    const actionHtml = ChatMessageRenderer.renderActionMessage(actionResult);
+                    console.log('Rendered HTML:', actionHtml);
+                    addChatMessage(actionHtml, 'bot', true); // true for HTML content
+                    
+                    // If action was successful, also update the dashboard
+                    if (actionResult.success && actionResult.action) {
+                        refreshDashboardAfterAction(actionResult.action);
+                    }
+                    
+                    return; // Don't proceed to normal chat
+                }
+            } catch (error) {
+                console.error('Action execution error:', error);
+                // Fall through to normal chat
+            }
+        }
+    } else {
+        console.error('chatbotActionService not available');
+    }
+    
     try {
         const response = await fetch('/api/chat', {
             method: 'POST',
@@ -989,24 +1029,33 @@ function quickQuestion(question) {
     sendChatMessage();
 }
 
-function addChatMessage(message, sender, isTyping = false) {
+function addChatMessage(message, sender, isHtmlOrTyping = false) {
     const container = document.getElementById('chatbotContent');
     const messageDiv = document.createElement('div');
+    
+    // Handle both typing and HTML cases
+    const isTyping = (typeof isHtmlOrTyping === 'boolean' && isHtmlOrTyping && message.includes('Typing')) || 
+                     (typeof isHtmlOrTyping === 'boolean' && isHtmlOrTyping && message.includes('टाइप')) ||
+                     (typeof isHtmlOrTyping === 'boolean' && isHtmlOrTyping && message.includes('टाइप करत'));
+    const isHtml = (typeof isHtmlOrTyping === 'boolean' && isHtmlOrTyping && !isTyping);
+    
     messageDiv.className = `mb-3 ${isTyping ? 'typing-message' : ''}`;
     
     if (sender === 'user') {
         messageDiv.innerHTML = `
             <div class="flex justify-end">
-                <div class="bg-green-600 text-white p-2 rounded-lg max-w-xs">
-                    ${message}
+                <div class="bg-green-600 text-white p-3 rounded-lg max-w-sm">
+                    ${escapeHtml(message)}
                 </div>
             </div>
         `;
     } else {
+        const content = isTyping ? '<i class="fas fa-circle animate-pulse"></i> ' + message :
+                       isHtml ? message : escapeHtml(message);
         messageDiv.innerHTML = `
             <div class="flex justify-start">
-                <div class="bg-gray-200 text-gray-800 p-2 rounded-lg max-w-xs">
-                    ${isTyping ? '<i class="fas fa-circle animate-pulse"></i>' : message}
+                <div class="bg-gray-100 text-gray-800 p-3 rounded-lg max-w-sm">
+                    ${content}
                 </div>
             </div>
         `;
@@ -1116,4 +1165,137 @@ if (typeof window !== 'undefined') {
             };
         }
     });
+}
+
+// Chatbot Action Helper Functions
+window.chatbotService = {
+    async submitChatLoan() {
+        const whrId = document.getElementById('chatLoanWHR').value;
+        const amount = document.getElementById('chatLoanAmount').value;
+        const purpose = document.getElementById('chatLoanPurpose').value;
+        
+        if (!whrId || !amount || !purpose) {
+            addChatMessage('Please fill all loan details.', 'bot');
+            return;
+        }
+        
+        const loanData = {
+            whrId,
+            amount: parseFloat(amount),
+            purpose,
+            tenure: 12 // Default 12 months
+        };
+        
+        const result = await window.chatbotActionService.submitLoanApplication(loanData);
+        const actionHtml = ChatMessageRenderer.renderActionMessage(result);
+        addChatMessage(actionHtml, 'bot', true);
+        
+        if (result.success) {
+            refreshDashboardAfterAction('loanApplied');
+        }
+    },
+    
+    async submitChatRepayment() {
+        const loanId = document.getElementById('chatRepayLoan').value;
+        const amount = document.getElementById('chatRepayAmount').value;
+        
+        if (!loanId || !amount) {
+            addChatMessage('Please fill all repayment details.', 'bot');
+            return;
+        }
+        
+        const repaymentData = {
+            loanId,
+            amount: parseFloat(amount)
+        };
+        
+        const result = await window.chatbotActionService.submitLoanRepayment(repaymentData);
+        const actionHtml = ChatMessageRenderer.renderActionMessage(result);
+        addChatMessage(actionHtml, 'bot', true);
+        
+        if (result.success) {
+            refreshDashboardAfterAction('repaymentComplete');
+        }
+    },
+    
+    async submitChatAuction() {
+        const whrId = document.getElementById('chatAuctionWHR').value;
+        const basePrice = document.getElementById('chatAuctionPrice').value;
+        
+        if (!whrId || !basePrice) {
+            addChatMessage('Please fill all auction details.', 'bot');
+            return;
+        }
+        
+        // Submit auction (you'll need to implement this API endpoint)
+        try {
+            const response = await fetch('/api/auctions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    whrId,
+                    basePrice: parseFloat(basePrice),
+                    duration: 30 // 30 seconds for demo
+                })
+            });
+            
+            if (response.ok) {
+                const auction = await response.json();
+                addChatMessage(`✅ Auction created successfully! Auction ID: ${auction._id}`, 'bot');
+                refreshDashboardAfterAction('auctionCreated');
+            } else {
+                const error = await response.json();
+                addChatMessage(`❌ Auction creation failed: ${error.message}`, 'bot');
+            }
+        } catch (error) {
+            addChatMessage('❌ Network error. Please try again.', 'bot');
+        }
+    },
+    
+    async quickRepayment(loanId, amount) {
+        const result = await window.chatbotActionService.submitLoanRepayment({
+            loanId,
+            amount
+        });
+        
+        const actionHtml = ChatMessageRenderer.renderActionMessage(result);
+        addChatMessage(actionHtml, 'bot', true);
+        
+        if (result.success) {
+            refreshDashboardAfterAction('repaymentComplete');
+        }
+    }
+};
+
+// Dashboard refresh after actions
+function refreshDashboardAfterAction(action) {
+    switch (action) {
+        case 'loanApplied':
+        case 'repaymentComplete':
+            // Refresh loans section
+            if (document.getElementById('loans').style.display !== 'none') {
+                loadLoans();
+            }
+            // Update stats
+            updateDashboardStats();
+            break;
+            
+        case 'auctionCreated':
+            // Refresh auctions section
+            if (document.getElementById('auction').style.display !== 'none') {
+                loadAuctions();
+            }
+            break;
+            
+        default:
+            // General refresh
+            updateDashboardStats();
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }

@@ -1,8 +1,6 @@
 // Warehouse Manager Dashboard JavaScript
 let currentUser = null;
 let currentSection = 'overview';
-let pendingDeposits = [];
-let approvedDeposits = [];
 let generatedWHRs = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,7 +17,7 @@ async function initializeDashboard() {
     
     // Load dashboard data
     loadDashboardStats();
-    loadPendingDeposits();
+    loadFarmersForWHR();
     loadWHRHistory();
     loadInventory();
     loadWarehouseSettings();
@@ -101,12 +99,12 @@ async function loadDashboardStats() {
         if (whrResponse.ok) {
             const whrData = await whrResponse.json();
             const activeWHRs = whrData.whrs?.filter(whr => whr.status === 'active').length || 0;
+            const totalWHRs = whrData.whrs?.length || 0;
             document.getElementById('activeWHRCount').textContent = activeWHRs;
+            
+            // Update the pending requests to show total WHRs generated
+            document.getElementById('pendingRequests').textContent = totalWHRs;
         }
-
-        // Load pending requests count
-        const pendingCount = pendingDeposits.length;
-        document.getElementById('pendingRequests').textContent = pendingCount;
 
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
@@ -129,9 +127,7 @@ function switchSection(section) {
     currentSection = section;
     
     // Load section-specific data
-    if (section === 'pending-deposits') {
-        loadPendingDeposits();
-    } else if (section === 'generate-whr') {
+    if (section === 'generate-whr') {
         loadFarmersForWHR();
     } else if (section === 'inventory') {
         loadInventory();
@@ -142,251 +138,72 @@ function switchSection(section) {
     }
 }
 
-async function loadPendingDeposits() {
+
+
+
+
+async function loadFarmersForWHR() {
+    // Load all farmers for WHR generation
+    const farmerSelect = document.getElementById('farmerSelect');
+    
+    if (!farmerSelect) return; // Element not available yet
+    
+    farmerSelect.innerHTML = '<option value="">Choose farmer</option>';
+    
     try {
-        const response = await fetch('/api/warehouse/pending-deposits', {
-            credentials: 'include'
+        // Fetch all farmers from the dedicated endpoint
+        const response = await fetch('/api/warehouse/all-farmers', { 
+            credentials: 'include' 
         });
         
         if (response.ok) {
             const data = await response.json();
-            pendingDeposits = data.deposits || [];
-            displayPendingDeposits(pendingDeposits);
+            const farmers = data.farmers || [];
+            
+            farmers.forEach(farmer => {
+                farmerSelect.innerHTML += `
+                    <option value="${farmer.userId}" data-name="${farmer.name}" data-phone="${farmer.phone}" data-location="${farmer.location}">
+                        ${farmer.name} (${farmer.userId}) - ${farmer.location}
+                    </option>
+                `;
+            });
+            
+            console.log(`Loaded ${farmers.length} farmers for WHR generation`);
+            
+            if (farmers.length === 0) {
+                // If no farmers in database, add fallback demo farmers
+                addDemoFarmersToSelect();
+            }
         } else {
-            // Show demo data if no real deposits
-            displayPendingDeposits([]);
+            console.error('Failed to fetch farmers:', response.status);
+            // Fallback to demo farmers
+            addDemoFarmersToSelect();
         }
     } catch (error) {
-        console.error('Error loading pending deposits:', error);
-        displayPendingDeposits([]);
+        console.error('Error loading farmers for WHR:', error);
+        // Fallback to demo farmers
+        addDemoFarmersToSelect();
     }
 }
 
-function displayPendingDeposits(deposits) {
-    const container = document.getElementById('depositsList');
-    
-    if (deposits.length === 0) {
-        container.innerHTML = `
-            <div class="text-center py-12">
-                <i class="fas fa-inbox text-4xl text-gray-400 mb-4"></i>
-                <p class="text-gray-500">No pending deposit requests</p>
-                <p class="text-sm text-gray-400">Farmers will submit deposit requests that appear here</p>
-                <button onclick="addDemoDeposit()" class="enhanced-btn px-4 py-2 mt-4">
-                    Add Demo Request
-                </button>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = deposits.map(deposit => `
-        <div class="dashboard-card rounded-xl p-6" id="deposit-${deposit.id}">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800">${deposit.farmerName}</h3>
-                    <p class="text-sm text-gray-600">Farmer ID: ${deposit.farmerId}</p>
-                    <p class="text-sm text-gray-600">Phone: ${deposit.phone}</p>
-                </div>
-                <span class="px-3 py-1 status-pending text-white text-sm rounded-full">
-                    PENDING
-                </span>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div>
-                    <p class="text-xs text-gray-500">Crop Type</p>
-                    <p class="font-medium">${deposit.cropType}</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Variety</p>
-                    <p class="font-medium">${deposit.variety}</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Quantity</p>
-                    <p class="font-medium">${deposit.quantity} quintals</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500">Expected Grade</p>
-                    <p class="font-medium">Grade ${deposit.expectedGrade}</p>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <p class="text-xs text-gray-500 mb-1">Requested Date:</p>
-                <p class="text-sm">${new Date(deposit.requestDate).toLocaleDateString()}</p>
-            </div>
-            
-            <div class="flex space-x-2">
-                <button onclick="approveDeposit('${deposit.id}')" 
-                        class="flex-1 enhanced-btn px-4 py-2 text-sm">
-                    <i class="fas fa-check mr-1"></i>Approve
-                </button>
-                <button onclick="inspectDeposit('${deposit.id}')" 
-                        class="flex-1 bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
-                    <i class="fas fa-search mr-1"></i>Inspect
-                </button>
-                <button onclick="rejectDeposit('${deposit.id}')" 
-                        class="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700">
-                    <i class="fas fa-times mr-1"></i>Reject
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-async function addDemoDeposit() {
-    try {
-        // Get the actual demo farmer data
-        const farmersResponse = await fetch('/api/auth/demo-users', { credentials: 'include' });
-        const farmersData = await farmersResponse.json();
-        const demoFarmer = farmersData.users?.find(user => user.role === 'farmer');
-        
-        if (!demoFarmer) {
-            showNotification('Demo farmer not found. Please restart the application.', 'error');
-            return;
-        }
-        
-        const demoDeposit = {
-            id: `DEP${Date.now()}`,
-            farmerId: demoFarmer.userId,
-            farmerName: `${demoFarmer.profile.firstName} ${demoFarmer.profile.lastName}`,
-            phone: demoFarmer.profile.phone,
-            cropType: 'wheat',
-            variety: 'HD-2967',
-            quantity: 50,
-            expectedGrade: 'A',
-            requestDate: new Date().toISOString(),
-            status: 'pending'
-        };
-        
-        pendingDeposits.push(demoDeposit);
-        displayPendingDeposits(pendingDeposits);
-        showNotification('Demo deposit request added!', 'success');
-    } catch (error) {
-        console.error('Error adding demo deposit:', error);
-        // Fallback to static demo data
-        const demoDeposit = {
-            id: `DEP${Date.now()}`,
-            farmerId: 'FRM001234',
-            farmerName: 'Rajesh Kumar',
-            phone: '+91-9876543210',
-            cropType: 'wheat',
-            variety: 'HD-2967',
-            quantity: 50,
-            expectedGrade: 'A',
-            requestDate: new Date().toISOString(),
-            status: 'pending'
-        };
-        
-        pendingDeposits.push(demoDeposit);
-        displayPendingDeposits(pendingDeposits);
-        showNotification('Demo deposit request added!', 'success');
-    }
-}
-
-async function approveDeposit(depositId) {
-    const deposit = pendingDeposits.find(d => d.id === depositId);
-    if (!deposit) return;
-    
-    showLoading(true);
-    
-    try {
-        // Simulate approval process
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Remove from pending list
-        pendingDeposits = pendingDeposits.filter(d => d.id !== depositId);
-        
-        // Add to approved list for WHR generation
-        const approvedDeposit = {
-            ...deposit,
-            status: 'approved',
-            approvedDate: new Date().toISOString(),
-            approvedBy: currentUser.userId
-        };
-        
-        // Store approved deposit
-        approvedDeposits.push(approvedDeposit);
-        
-        // Update UI
-        document.getElementById(`deposit-${depositId}`).remove();
-        showNotification(`Deposit from ${deposit.farmerName} approved!`, 'success');
-        
-        // Update stats
-        loadDashboardStats();
-        
-        // Add to farmers list for WHR generation
-        updateFarmersForWHR();
-        
-    } catch (error) {
-        console.error('Error approving deposit:', error);
-        showNotification('Error approving deposit', 'error');
-    } finally {
-        showLoading(false);
-    }
-}
-
-function inspectDeposit(depositId) {
-    const deposit = pendingDeposits.find(d => d.id === depositId);
-    if (!deposit) return;
-    
-    // Show inspection details
-    showNotification(`Inspecting crops from ${deposit.farmerName}. Quality assessment in progress...`, 'info');
-    
-    // Simulate inspection process
-    setTimeout(() => {
-        showNotification(`Inspection complete. Crops meet quality standards for Grade ${deposit.expectedGrade}.`, 'success');
-    }, 3000);
-}
-
-function rejectDeposit(depositId) {
-    const deposit = pendingDeposits.find(d => d.id !== depositId);
-    
-    if (confirm('Are you sure you want to reject this deposit request?')) {
-        pendingDeposits = pendingDeposits.filter(d => d.id !== depositId);
-        document.getElementById(`deposit-${depositId}`).remove();
-        showNotification('Deposit request rejected', 'info');
-        loadDashboardStats();
-    }
-}
-
-function loadFarmersForWHR() {
-    // Load approved farmers for WHR generation
+function addDemoFarmersToSelect() {
     const farmerSelect = document.getElementById('farmerSelect');
+    const demoFarmers = [
+        { id: 'FRM001234', name: 'Rajesh Kumar', phone: '+91-9876543210', location: 'Sonipat, Haryana' },
+        { id: 'FRM001235', name: 'Suresh Patel', phone: '+91-9876543211', location: 'Ahmedabad, Gujarat' },
+        { id: 'FRM001236', name: 'Mukesh Singh', phone: '+91-9876543212', location: 'Ludhiana, Punjab' }
+    ];
     
-    farmerSelect.innerHTML = '<option value="">Choose farmer with approved deposit</option>';
-    
-    // Add approved farmers from deposits
-    approvedDeposits.forEach(deposit => {
+    demoFarmers.forEach(farmer => {
         farmerSelect.innerHTML += `
-            <option value="${deposit.farmerId}" data-name="${deposit.farmerName}" data-phone="${deposit.phone}" data-crop="${deposit.cropType}" data-quantity="${deposit.quantity}">
-                ${deposit.farmerName} (${deposit.farmerId}) - ${deposit.cropType} ${deposit.quantity}q
+            <option value="${farmer.id}" data-name="${farmer.name}" data-phone="${farmer.phone}" data-location="${farmer.location}">
+                ${farmer.name} (${farmer.id}) - ${farmer.location}
             </option>
         `;
     });
-    
-    // Add demo farmers if no approved deposits
-    if (approvedDeposits.length === 0) {
-        const demoFarmers = [
-            { id: 'FRM001234', name: 'Rajesh Kumar', phone: '+91-9876543210' },
-            { id: 'FRM001235', name: 'Suresh Patel', phone: '+91-9876543211' },
-            { id: 'FRM001236', name: 'Mukesh Singh', phone: '+91-9876543212' }
-        ];
-        
-        demoFarmers.forEach(farmer => {
-            farmerSelect.innerHTML += `
-                <option value="${farmer.id}" data-name="${farmer.name}" data-phone="${farmer.phone}">
-                    ${farmer.name} (${farmer.id})
-                </option>
-            `;
-        });
-    }
 }
 
-function updateFarmersForWHR() {
-    // This would be called after approving deposits
-    loadFarmersForWHR();
-}
+
 
 function calculateWHRValues() {
     const quantity = parseFloat(document.getElementById('quantity').value) || 0;

@@ -7,6 +7,24 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const whrSvc = require('./public/js/whrService'); // Adjusted path to match your project structure
+
+const functionSpecs = [
+  {
+    name: 'get_whr_list',
+    description: 'Return all WHRs for the logged‑in farmer',
+    parameters: { type: 'object', properties: {} }
+  },
+  {
+    name: 'create_loan_from_whr',
+    description: 'Create a loan using a given WHR ID',
+    parameters: {
+      type: 'object',
+      properties: { whr_id: { type: 'string' } },
+      required: ['whr_id']
+    }
+  }
+];
 
 // Import models
 const User = require('./models/User');
@@ -71,7 +89,8 @@ async function createAssistant() {
             assistant = await openai.beta.assistants.create({
                 name: "KrishiMitra",
                 instructions: SYSTEM_PROMPT,
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
+                functions: functionSpecs  
             });
             console.log("New assistant created successfully");
         }
@@ -353,6 +372,32 @@ app.get('/api/auth/demo-users', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to fetch demo users'
+        });
+    }
+});
+
+// Get all farmers (for warehouse managers)
+app.get('/api/warehouse/all-farmers', authenticateUser, authorizeRole(['warehouse_manager']), async (req, res) => {
+    try {
+        const farmers = await User.find({ 
+            role: 'farmer',
+            isActive: true 
+        }).select('userId profile.firstName profile.lastName profile.phone profile.address -_id');
+        
+        res.json({
+            success: true,
+            farmers: farmers.map(farmer => ({
+                userId: farmer.userId,
+                name: `${farmer.profile.firstName} ${farmer.profile.lastName}`,
+                phone: farmer.profile.phone,
+                location: `${farmer.profile.address.city}, ${farmer.profile.address.state}`
+            }))
+        });
+    } catch (error) {
+        console.error('Error fetching farmers:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch farmers'
         });
     }
 });
@@ -823,22 +868,7 @@ app.get('/api/warehouse/inventory', authenticateUser, authorizeRole(['warehouse_
     }
 });
 
-// Get pending deposits
-app.get('/api/warehouse/pending-deposits', authenticateUser, authorizeRole(['warehouse_manager']), async (req, res) => {
-    try {
-        // For demo, return empty array - deposits will be added via demo button
-        res.json({
-            success: true,
-            deposits: []
-        });
-    } catch (error) {
-        console.error('Error fetching pending deposits:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to fetch pending deposits'
-        });
-    }
-});
+
 
 // Generate WHR
 app.post('/api/warehouse/generate-whr', authenticateUser, authorizeRole(['warehouse_manager']), async (req, res) => {
@@ -1299,6 +1329,8 @@ app.post('/api/loans/warehouse', async (req, res) => {
     }
 });
 
+
+
 // Create demo users on startup
 async function createDemoUsers() {
     try {
@@ -1333,6 +1365,86 @@ async function createDemoUsers() {
             demoFarmer.userId = demoFarmer.generateUserId();
             await demoFarmer.save();
             console.log('Demo farmer created');
+        }
+
+        // Create additional demo farmers
+        const additionalFarmers = [
+            {
+                email: 'suresh.patel@demo.com',
+                firstName: 'Suresh',
+                lastName: 'Patel',
+                phone: '+91-9876543211',
+                city: 'Ahmedabad',
+                state: 'Gujarat',
+                farmSize: 3.2,
+                primaryCrops: ['cotton', 'soybean'],
+                experience: 12
+            },
+            {
+                email: 'mukesh.singh@demo.com',
+                firstName: 'Mukesh',
+                lastName: 'Singh',
+                phone: '+91-9876543212',
+                city: 'Ludhiana',
+                state: 'Punjab',
+                farmSize: 8.0,
+                primaryCrops: ['wheat', 'rice'],
+                experience: 20
+            },
+            {
+                email: 'priya.sharma@demo.com',
+                firstName: 'Priya',
+                lastName: 'Sharma',
+                phone: '+91-9876543213',
+                city: 'Jaipur',
+                state: 'Rajasthan',
+                farmSize: 4.5,
+                primaryCrops: ['wheat', 'gram'],
+                experience: 8
+            },
+            {
+                email: 'vikram.reddy@demo.com',
+                firstName: 'Vikram',
+                lastName: 'Reddy',
+                phone: '+91-9876543214',
+                city: 'Hyderabad',
+                state: 'Telangana',
+                farmSize: 6.0,
+                primaryCrops: ['rice', 'cotton'],
+                experience: 18
+            }
+        ];
+
+        for (const farmerData of additionalFarmers) {
+            const existingAdditionalFarmer = await User.findOne({ email: farmerData.email });
+            if (!existingAdditionalFarmer) {
+                const farmer = new User({
+                    email: farmerData.email,
+                    password: 'password123',
+                    role: 'farmer',
+                    profile: {
+                        firstName: farmerData.firstName,
+                        lastName: farmerData.lastName,
+                        phone: farmerData.phone,
+                        address: {
+                            street: `Village ${farmerData.firstName}pur`,
+                            city: farmerData.city,
+                            state: farmerData.state,
+                            pincode: '000000'
+                        },
+                        farmDetails: {
+                            farmSize: farmerData.farmSize,
+                            primaryCrops: farmerData.primaryCrops,
+                            farmingExperience: farmerData.experience
+                        }
+                    },
+                    accountBalance: Math.floor(Math.random() * 50000) + 15000,
+                    creditScore: Math.floor(Math.random() * 200) + 600
+                });
+                farmer.userId = farmer.generateUserId();
+                await farmer.save();
+                console.log(`Additional farmer ${farmerData.firstName} ${farmerData.lastName} created`);
+            }
         }
         
         if (!existingWarehouse) {
@@ -1371,6 +1483,158 @@ async function createDemoUsers() {
         console.error('Error creating demo users:', error);
     }
 }
+
+// Additional API endpoints for chatbot actions
+
+// Get farmer's WHRs
+app.get('/api/whr/farmer', async (req, res) => {
+    try {
+        console.log('Fetching WHRs for session:', req.session.userId);
+        if (!req.session.userId) {
+            return res.status(401).json({ message: 'Not authenticated' });
+        }
+        const whrs = await WHR.find({ farmerId: req.session.userId });
+        console.log('Found WHRs:', whrs.length);
+        res.json(whrs);
+    } catch (error) {
+        console.error('Error fetching WHRs:', error);
+        res.status(500).json({ message: 'Error fetching WHRs', error: error.message });
+    }
+});
+
+// Get farmer's loans  
+app.get('/api/loans/farmer', async (req, res) => {
+    try {
+        console.log('Fetching loans for session:', req.session.userId);
+        if (!req.session.userId) {
+            return res.status(401).json({ message: 'Not authenticated' });
+        }
+        const loans = await Loan.find({ farmerId: req.session.userId });
+        console.log('Found loans:', loans.length);
+        res.json(loans);
+    } catch (error) {
+        console.error('Error fetching loans:', error);
+        res.status(500).json({ message: 'Error fetching loans', error: error.message });
+    }
+});
+
+// Get farmer's transactions
+app.get('/api/transactions/farmer', async (req, res) => {
+    try {
+        const transactions = await Transaction.find({ farmerId: req.session.userId })
+            .sort({ date: -1 })
+            .limit(20);
+        res.json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching transactions', error: error.message });
+    }
+});
+
+// Get farmer's auctions
+app.get('/api/auctions/farmer', async (req, res) => {
+    try {
+        // For demo purposes, return empty array or mock data
+        const auctions = []; // You can implement actual auction model later
+        res.json(auctions);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching auctions', error: error.message });
+    }
+});
+
+// Loan repayment endpoint
+app.post('/api/loans/:loanId/repay', async (req, res) => {
+    try {
+        const { loanId } = req.params;
+        const { amount } = req.body;
+        
+        const loan = await Loan.findById(loanId);
+        if (!loan) {
+            return res.status(404).json({ message: 'Loan not found' });
+        }
+        
+        if (loan.farmerId.toString() !== req.session.userId) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+        
+        if (amount > loan.remainingAmount) {
+            return res.status(400).json({ message: 'Payment amount exceeds remaining balance' });
+        }
+        
+        // Update loan
+        loan.remainingAmount -= amount;
+        if (loan.remainingAmount <= 0) {
+            loan.status = 'completed';
+            loan.remainingAmount = 0;
+            
+            // Unlock WHR if loan is fully paid
+            await WHR.findByIdAndUpdate(loan.whrId, { status: 'active' });
+        }
+        await loan.save();
+        
+        // Create transaction record
+        const transaction = new Transaction({
+            farmerId: req.session.userId,
+            type: 'loan_repayment',
+            amount: amount,
+            description: `Loan repayment for loan ${loanId}`,
+            date: new Date()
+        });
+        await transaction.save();
+        
+        // Update user balance
+        const user = await User.findById(req.session.userId);
+        user.profile.balance = (user.profile.balance || 0) - amount;
+        await user.save();
+        
+        res.json({
+            message: 'Payment successful',
+            remainingAmount: loan.remainingAmount,
+            loanStatus: loan.status
+        });
+        
+    } catch (error) {
+        res.status(500).json({ message: 'Payment failed', error: error.message });
+    }
+});
+
+// Create auction endpoint (demo)
+app.post('/api/auctions', async (req, res) => {
+    try {
+        const { whrId, basePrice, duration } = req.body;
+        
+        // Verify WHR ownership
+        const whr = await WHR.findById(whrId);
+        if (!whr || whr.farmerId.toString() !== req.session.userId) {
+            return res.status(404).json({ message: 'WHR not found or unauthorized' });
+        }
+        
+        if (whr.status !== 'active') {
+            return res.status(400).json({ message: 'WHR is not available for auction' });
+        }
+        
+        // For demo purposes, create a simple auction object
+        const auction = {
+            _id: new Date().getTime().toString(),
+            farmerId: req.session.userId,
+            whrId: whrId,
+            cropType: whr.cropType,
+            quantity: whr.quantity,
+            basePrice: basePrice,
+            currentPrice: basePrice,
+            status: 'active',
+            endTime: new Date(Date.now() + duration * 1000),
+            createdAt: new Date()
+        };
+        
+        // In a real app, you'd save this to an Auction model
+        // For demo, we'll just return the auction object
+        
+        res.status(201).json(auction);
+        
+    } catch (error) {
+        res.status(500).json({ message: 'Auction creation failed', error: error.message });
+    }
+});
 
 // Initialize server
 async function initializeServer() {

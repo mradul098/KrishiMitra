@@ -96,9 +96,6 @@
                 <div class="nav-item active px-4 py-3 rounded-lg" data-section="overview">
                     <i class="fas fa-chart-pie mr-3"></i>Overview
                 </div>
-                <div class="nav-item px-4 py-3 rounded-lg" data-section="pending-deposits">
-                    <i class="fas fa-clock mr-3"></i>Pending Deposits
-                </div>
                 <div class="nav-item px-4 py-3 rounded-lg" data-section="generate-whr">
                     <i class="fas fa-file-contract mr-3"></i>Generate WHR
                 </div>
@@ -158,10 +155,10 @@
                     <div class="stat-card dashboard-card rounded-xl p-6">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-sm opacity-90">Pending Requests</p>
+                                <p class="text-sm opacity-90">Total WHRs Generated</p>
                                 <p class="text-2xl font-bold" id="pendingRequests">0</p>
                             </div>
-                            <i class="fas fa-clock text-3xl opacity-80"></i>
+                            <i class="fas fa-receipt text-3xl opacity-80"></i>
                         </div>
                     </div>
                 </div>
@@ -170,21 +167,21 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div class="dashboard-card rounded-xl p-6">
                         <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                            <i class="fas fa-plus-circle text-blue-600 mr-2"></i>New Deposit
+                            <i class="fas fa-file-contract text-green-600 mr-2"></i>Generate WHR
                         </h3>
-                        <p class="text-gray-600 mb-4">Process new crop deposits from farmers</p>
-                        <button onclick="switchSection('pending-deposits')" class="enhanced-btn px-4 py-2 w-full">
-                            View Requests
+                        <p class="text-gray-600 mb-4">Create warehouse receipts for any farmer</p>
+                        <button onclick="switchSection('generate-whr')" class="enhanced-btn px-4 py-2 w-full">
+                            Create WHR
                         </button>
                     </div>
 
                     <div class="dashboard-card rounded-xl p-6">
                         <h3 class="text-lg font-semibold mb-4 text-gray-800">
-                            <i class="fas fa-file-contract text-green-600 mr-2"></i>Generate WHR
+                            <i class="fas fa-history text-blue-600 mr-2"></i>WHR History
                         </h3>
-                        <p class="text-gray-600 mb-4">Create warehouse receipts for approved deposits</p>
-                        <button onclick="switchSection('generate-whr')" class="enhanced-btn px-4 py-2 w-full">
-                            Create WHR
+                        <p class="text-gray-600 mb-4">View all generated warehouse receipts</p>
+                        <button onclick="switchSection('whr-history')" class="enhanced-btn px-4 py-2 w-full">
+                            View History
                         </button>
                     </div>
 
@@ -208,44 +205,13 @@
                 </div>
             </div>
 
-            <!-- Pending Deposits Section -->
-            <div id="pending-deposits" class="section hidden">
-                <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Pending Deposit Requests</h2>
-                    <p class="text-gray-600">Review and approve crop deposits from farmers</p>
-                </div>
 
-                <!-- Filter Options -->
-                <div class="dashboard-card rounded-xl p-4 mb-6">
-                    <div class="flex items-center space-x-4">
-                        <span class="text-sm font-medium text-gray-700">Filter by:</span>
-                        <select id="cropTypeFilter" class="enhanced-input">
-                            <option value="">All Crops</option>
-                            <option value="wheat">Wheat</option>
-                            <option value="rice">Rice</option>
-                            <option value="cotton">Cotton</option>
-                            <option value="soybean">Soybean</option>
-                        </select>
-                        <button onclick="filterDeposits()" class="enhanced-btn px-4 py-2">
-                            <i class="fas fa-filter mr-2"></i>Apply Filter
-                        </button>
-                        <button onclick="addDemoDeposit()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            <i class="fas fa-plus mr-2"></i>Add Demo Request
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Deposits List -->
-                <div id="depositsList" class="space-y-4">
-                    <!-- Deposit requests will be loaded here -->
-                </div>
-            </div>
 
             <!-- Generate WHR Section -->
             <div id="generate-whr" class="section hidden">
                 <div class="mb-6">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Generate Warehouse Receipt</h2>
-                    <p class="text-gray-600">Create WHR for approved crop deposits</p>
+                    <p class="text-gray-600">Create WHR for any farmer who has deposited crops offline</p>
                 </div>
 
                 <!-- WHR Generation Form -->
@@ -255,7 +221,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Select Farmer</label>
                             <select id="farmerSelect" required class="enhanced-input w-full">
-                                <option value="">Choose farmer with approved deposit</option>
+                                <option value="">Choose farmer</option>
                             </select>
                         </div>
 
