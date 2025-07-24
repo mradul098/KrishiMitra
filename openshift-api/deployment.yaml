@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hackathon-api
+  namespace: psd2ce-official
+  labels:
+    app: hackathon-api
+    team: psd2ce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackathon-api
+  template:
+    metadata:
+      labels:
+        app: hackathon-api
+        team: psd2ce
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: hackathon-api
+        image: hackathon-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/run/secrets/gcp/config.json
+        - name: PORT
+          value: "8080"
+        - name: TEAM_NAME
+          value: psd2ce
+        - name: PROJECT_ID
+          value: hack-team-psd2ce
+        - name: BUCKET_NAME
+          value: hack-team-psd2ce-openshift-demo
+        - name: LOG_LEVEL
+          value: DEBUG
+        volumeMounts:
+        - name: gcp-wif-config
+          mountPath: /var/run/secrets/gcp
+          readOnly: true
+        - name: sa-token
+          mountPath: /var/run/secrets/openshift/serviceaccount
+          readOnly: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: gcp-wif-config
+        secret:
+          secretName: gcp-wif-config
+          items:
+          - key: config.json
+            path: config.json
+      - name: sa-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: //iam.googleapis.com/projects/785558430619/locations/global/workloadIdentityPools/openshift/providers/openshift-cluster
+              expirationSeconds: 3600
+              path: token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hackathon-api
+  namespace: psd2ce-official
+  labels:
+    app: hackathon-api
+    team: psd2ce
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: hackathon-api
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: hackathon-api
+  namespace: psd2ce-official
+  labels:
+    app: hackathon-api
+    team: psd2ce
+spec:
+  to:
+    kind: Service
+    name: hackathon-api
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
