@@ -8,6 +8,21 @@ variable "infra_sa_id" {
   type = string
 }
 
+variable "openshift_namespace" {
+  description = "The OpenShift namespace for your team"
+  type = string
+}
+
+variable "openshift_registry" {
+  description = "The OpenShift internal registry URL"
+  type = string
+}
+
+variable "openshift_server" {
+  description = "The OpenShift cluster API endpoint URL"
+  type = string
+}
+
 variable "project_id" {
   description = "Your team's GCP Project ID."
   type = string
