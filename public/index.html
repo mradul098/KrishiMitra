@@ -61,21 +61,21 @@
                         <i class="fas fa-seedling text-white text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-800">KrishiMitra</h1>
+                        <h1 class="text-xl font-bold text-gray-800" data-translate="welcome">KrishiMitra</h1>
                         <p class="text-xs text-gray-500">Powered by Deutsche Bank</p>
                     </div>
                 </div>
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="#services" class="text-gray-600 hover:text-blue-600 transition">Services</a>
-                    <a href="#schemes" class="text-gray-600 hover:text-blue-600 transition">Government Schemes</a>
-                    <a href="#about" class="text-gray-600 hover:text-blue-600 transition">About</a>
-                    <a href="#contact" class="text-gray-600 hover:text-blue-600 transition">Contact</a>
+                    <a href="#services" class="text-gray-600 hover:text-blue-600 transition" data-translate="services">Services</a>
+                    <a href="#schemes" class="text-gray-600 hover:text-blue-600 transition" data-translate="governmentSchemes">Government Schemes</a>
+                    <a href="#about" class="text-gray-600 hover:text-blue-600 transition" data-translate="about">About</a>
+                    <a href="#contact" class="text-gray-600 hover:text-blue-600 transition" data-translate="contact">Contact</a>
                     <select class="language-selector bg-gray-100 border rounded px-2 py-1 text-sm" onchange="changeLanguage(this.value)">
                         <option value="en">English</option>
                         <option value="hi">हिन्दी</option>
                         <option value="mr">मराठी</option>
                     </select>
-                    <a href="auth.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Login</a>
+                    <a href="auth.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition" data-translate="login">Login</a>
                 </div>
                 <div class="md:hidden">
                     <button class="text-gray-600 focus:outline-none" onclick="toggleMobileMenu()">
@@ -87,11 +87,11 @@
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
             <div class="px-4 pt-2 pb-3 space-y-1">
-                <a href="#services" class="block px-3 py-2 text-gray-600">Services</a>
-                <a href="#schemes" class="block px-3 py-2 text-gray-600">Government Schemes</a>
-                <a href="#about" class="block px-3 py-2 text-gray-600">About</a>
-                <a href="#contact" class="block px-3 py-2 text-gray-600">Contact</a>
-                <a href="auth.html" class="block px-3 py-2 bg-blue-600 text-white rounded-lg text-center">Login</a>
+                <a href="#services" class="block px-3 py-2 text-gray-600" data-translate="nav_services">Services</a>
+                <a href="#schemes" class="block px-3 py-2 text-gray-600" data-translate="nav_schemes">Government Schemes</a>
+                <a href="#about" class="block px-3 py-2 text-gray-600" data-translate="nav_about">About</a>
+                <a href="#contact" class="block px-3 py-2 text-gray-600" data-translate="nav_contact">Contact</a>
+                <a href="auth.html" class="block px-3 py-2 bg-blue-600 text-white rounded-lg text-center" data-translate="nav_login">Login</a>
             </div>
         </div>
     </nav>
@@ -123,8 +123,8 @@
                         <span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">Official Partner</span>
                     </div>
                     
-                    <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                        <span data-translate="tagline">Your Complete <span class="text-yellow-400">Agricultural Finance</span> Ecosystem</span>
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-translate="tagline">
+                        Your Complete <span class="text-yellow-400">Agricultural Finance</span> Ecosystem
                     </h1>
                     
                     <p class="text-xl mb-8 opacity-90" data-translate="subtitle">
@@ -135,19 +135,19 @@
                     <div class="grid grid-cols-2 gap-4 mb-8">
                         <div class="trust-badge rounded-lg p-4 text-center">
                             <div class="counter-animate text-2xl font-bold" id="benefitsCounter">₹2.3 Cr</div>
-                            <p class="text-sm opacity-80">Benefits Accessed Today</p>
+                            <p class="text-sm opacity-80" data-translate="benefitsAccessedToday">Benefits Accessed Today</p>
                         </div>
                         <div class="trust-badge rounded-lg p-4 text-center">
                             <div class="counter-animate text-2xl font-bold" id="farmersCounter">45,678</div>
-                            <p class="text-sm opacity-80">Active Farmers</p>
+                            <p class="text-sm opacity-80" data-translate="activeFarmers">Active Farmers</p>
                         </div>
                     </div>
 
                     <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                        <a href="auth.html" class="bg-yellow-400 text-black px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition transform hover:scale-105 text-center">
+                        <a href="auth.html" class="bg-yellow-400 text-black px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition transform hover:scale-105 text-center" data-translate="startJourney">
                             <i class="fas fa-rocket mr-2"></i>Start Your Journey
                         </a>
-                        <button onclick="watchDemo()" class="border-2 border-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition text-center">
+                        <button onclick="watchDemo()" class="border-2 border-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition text-center" data-translate="watchDemo">
                             <i class="fas fa-play mr-2"></i>Watch Demo
                         </button>
                     </div>
@@ -187,10 +187,10 @@
     <section id="schemes" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4" data-translate="integratedSchemes">
                     Integrated with <span class="text-blue-600">8+ Government Schemes</span>
                 </h2>
-                <p class="text-xl text-gray-600">Access all farmer benefits through one unified platform</p>
+                <p class="text-xl text-gray-600" data-translate="accessBenefits">Access all farmer benefits through one unified platform</p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -199,15 +199,15 @@
                     <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-4">
                         <i class="fas fa-hand-holding-usd text-white"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">PM-KISAN</h3>
-                    <p class="text-gray-600 text-sm mb-4">₹6,000 annual direct transfer for 9.8 crore farmers</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2" data-translate="pmKisan">PM-KISAN</h3>
+                    <p class="text-gray-600 text-sm mb-4" data-translate="pmKisanDescription">₹6,000 annual direct transfer for 9.8 crore farmers</p>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span>Next Payment:</span>
+                            <span data-translate="nextPayment">Next Payment:</span>
                             <span class="font-semibold text-green-600">Mar 2025</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Amount:</span>
+                            <span data-translate="amount">Amount:</span>
                             <span class="font-semibold text-green-600">₹2,000</span>
                         </div>
                     </div>
@@ -218,15 +218,15 @@
                     <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
                         <i class="fas fa-credit-card text-white"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">Kisan Credit Card</h3>
-                    <p class="text-gray-600 text-sm mb-4">7% interest rate, ₹3L collateral-free limit</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2" data-translate="kisanCreditCard">Kisan Credit Card</h3>
+                    <p class="text-gray-600 text-sm mb-4" data-translate="kisanCreditCardDescription">7% interest rate, ₹3L collateral-free limit</p>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span>Interest Rate:</span>
+                            <span data-translate="interestRate">Interest Rate:</span>
                             <span class="font-semibold text-blue-600">4% (with PRI)</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Max Limit:</span>
+                            <span data-translate="maxLimit">Max Limit:</span>
                             <span class="font-semibold text-blue-600">₹3,00,000</span>
                         </div>
                     </div>
@@ -237,15 +237,15 @@
                     <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
                         <i class="fas fa-shield-alt text-white"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">PM Fasal Bima</h3>
-                    <p class="text-gray-600 text-sm mb-4">Comprehensive crop insurance, low premiums</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2" data-translate="pmFasalBima">PM Fasal Bima</h3>
+                    <p class="text-gray-600 text-sm mb-4" data-translate="pmFasalBimaDescription">Comprehensive crop insurance, low premiums</p>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span>Premium:</span>
+                            <span data-translate="premium">Premium:</span>
                             <span class="font-semibold text-orange-600">1.5-5%</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Claims Paid:</span>
+                            <span data-translate="claimsPaid">Claims Paid:</span>
                             <span class="font-semibold text-orange-600">₹1.56L Cr</span>
                         </div>
                     </div>
@@ -256,15 +256,15 @@
                     <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
                         <i class="fas fa-database text-white"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">Agri-Stack DPI</h3>
-                    <p class="text-gray-600 text-sm mb-4">₹6,000 Cr digital agriculture infrastructure</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2" data-translate="agriStack">Agri-Stack DPI</h3>
+                    <p class="text-gray-600 text-sm mb-4" data-translate="agriStackDescription">₹6,000 Cr digital agriculture infrastructure</p>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span>Investment:</span>
+                            <span data-translate="investment">Investment:</span>
                             <span class="font-semibold text-purple-600">₹6,000 Cr</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Farmers:</span>
+                            <span data-translate="farmers">Farmers:</span>
                             <span class="font-semibold text-purple-600">6 Cr+</span>
                         </div>
                     </div>
@@ -276,15 +276,15 @@
                 <div class="grid md:grid-cols-3 gap-8 text-center">
                     <div>
                         <div class="text-3xl font-bold mb-2">₹15.6L Cr</div>
-                        <p class="opacity-90">Total Scheme Benefits Available</p>
+                        <p class="opacity-90" data-translate="totalSchemeBenefits">Total Scheme Benefits Available</p>
                     </div>
                     <div>
                         <div class="text-3xl font-bold mb-2">9.8 Cr+</div>
-                        <p class="opacity-90">Farmers Already Enrolled</p>
+                        <p class="opacity-90" data-translate="farmersEnrolled">Farmers Already Enrolled</p>
                     </div>
                     <div>
                         <div class="text-3xl font-bold mb-2">24 Hours</div>
-                        <p class="opacity-90">Average Processing Time</p>
+                        <p class="opacity-90" data-translate="processingTime">Average Processing Time</p>
                     </div>
                 </div>
             </div>
@@ -295,10 +295,10 @@
     <section id="services" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4" data-translate="completeSolutions">
                     Complete <span class="text-green-600">Agricultural Finance</span> Solutions
                 </h2>
-                <p class="text-xl text-gray-600">Beyond government schemes - innovative financial products for modern farming</p>
+                <p class="text-xl text-gray-600" data-translate="innovativeProducts">Beyond government schemes - innovative financial products for modern farming</p>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-8">
@@ -307,15 +307,15 @@
                     <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
                         <i class="fas fa-warehouse text-green-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">WHR-Based Lending</h3>
-                    <p class="text-gray-600 mb-6">Secure loans against Warehouse Receipts with competitive rates and instant approval.</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4" data-translate="whrLending">WHR-Based Lending</h3>
+                    <p class="text-gray-600 mb-6" data-translate="whrLendingDescription">Secure loans against Warehouse Receipts with competitive rates and instant approval.</p>
                     <ul class="space-y-2 text-sm text-gray-600 mb-6">
                         <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Up to 80% of commodity value</li>
                         <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Instant approval in 24 hours</li>
                         <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Competitive interest rates</li>
                         <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>Flexible repayment terms</li>
                     </ul>
-                    <a href="auth.html" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block">Apply Now</a>
+                    <a href="auth.html" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition inline-block" data-translate="applyNow">Apply Now</a>
                 </div>
 
                 <!-- Live Auctions -->
@@ -323,15 +323,15 @@
                     <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
                         <i class="fas fa-gavel text-blue-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Live Crop Auctions</h3>
-                    <p class="text-gray-600 mb-6">Get the best prices for your crops through our transparent online auction platform.</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4" data-translate="liveAuctions">Live Crop Auctions</h3>
+                    <p class="text-gray-600 mb-6" data-translate="liveAuctionsDescription">Get the best prices for your crops through our transparent online auction platform.</p>
                     <ul class="space-y-2 text-sm text-gray-600 mb-6">
                         <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i>Real-time bidding system</li>
                         <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i>Transparent price discovery</li>
                         <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i>Multiple buyer network</li>
                         <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i>Instant payment settlement</li>
                     </ul>
-                    <a href="auth.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition inline-block">Start Auction</a>
+                    <a href="auth.html" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition inline-block" data-translate="startAuction">Start Auction</a>
                 </div>
 
                 <!-- DocuLocker -->
@@ -339,15 +339,15 @@
                     <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
                         <i class="fas fa-folder-open text-purple-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Secure DocuLocker</h3>
-                    <p class="text-gray-600 mb-6">Store and manage all your agricultural documents securely in the cloud.</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4" data-translate="secureDocuLocker">Secure DocuLocker</h3>
+                    <p class="text-gray-600 mb-6" data-translate="secureDocuLockerDescription">Store and manage all your agricultural documents securely in the cloud.</p>
                     <ul class="space-y-2 text-sm text-gray-600 mb-6">
                         <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i>Bank-grade security</li>
                         <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i>Easy document access</li>
                         <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i>Share with institutions</li>
                         <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i>Automatic backup</li>
                     </ul>
-                    <a href="auth.html" class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition inline-block">Access Locker</a>
+                    <a href="auth.html" class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition inline-block" data-translate="accessLocker">Access Locker</a>
                 </div>
             </div>
         </div>
@@ -358,10 +358,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h2 class="text-4xl font-bold text-gray-800 mb-6">
+                    <h2 class="text-4xl font-bold text-gray-800 mb-6" data-translate="aiAdvisory">
                         AI-Powered <span class="text-blue-600">Agricultural Advisory</span>
                     </h2>
-                    <p class="text-xl text-gray-600 mb-8">
+                    <p class="text-xl text-gray-600 mb-8" data-translate="aiAdvisoryDescription">
                         Make informed decisions with our advanced AI assistant that combines weather data, soil health, market trends, and government scheme recommendations.
                     </p>
                     
@@ -371,8 +371,8 @@
                                 <i class="fas fa-cloud-sun text-blue-600"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800">Weather Intelligence</h3>
-                                <p class="text-gray-600">Real-time weather alerts and seasonal forecasting for optimal crop planning.</p>
+                                <h3 class="text-lg font-semibold text-gray-800" data-translate="weatherIntelligence">Weather Intelligence</h3>
+                                <p class="text-gray-600" data-translate="weatherIntelligenceDescription">Real-time weather alerts and seasonal forecasting for optimal crop planning.</p>
                             </div>
                         </div>
                         
@@ -381,8 +381,8 @@
                                 <i class="fas fa-chart-line text-green-600"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800">Market Insights</h3>
-                                <p class="text-gray-600">Price predictions and demand forecasting to maximize your profits.</p>
+                                <h3 class="text-lg font-semibold text-gray-800" data-translate="marketInsights">Market Insights</h3>
+                                <p class="text-gray-600" data-translate="marketInsightsDescription">Price predictions and demand forecasting to maximize your profits.</p>
                             </div>
                         </div>
                         
@@ -391,8 +391,8 @@
                                 <i class="fas fa-robot text-purple-600"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800">Smart Recommendations</h3>
-                                <p class="text-gray-600">Personalized advice on schemes, loans, and farming practices.</p>
+                                <h3 class="text-lg font-semibold text-gray-800" data-translate="smartRecommendations">Smart Recommendations</h3>
+                                <p class="text-gray-600" data-translate="smartRecommendationsDescription">Personalized advice on schemes, loans, and farming practices.</p>
                             </div>
                         </div>
                     </div>
@@ -405,21 +405,21 @@
                                 <i class="fas fa-robot"></i>
                             </div>
                             <div>
-                                <h3 class="font-semibold">KrishiMitra AI Assistant</h3>
-                                <p class="text-sm opacity-75">Always here to help</p>
+                                <h3 class="font-semibold" data-translate="aiAssistant">KrishiMitra AI Assistant</h3>
+                                <p class="text-sm opacity-75" data-translate="alwaysHereToHelp">Always here to help</p>
                             </div>
                         </div>
                         
                         <div class="space-y-4">
                             <div class="bg-white bg-opacity-10 rounded-lg p-4">
-                                <p class="text-sm">"Based on your location and crop, you're eligible for PM-KISAN (₹2,000 due March) and should consider crop insurance before monsoon."</p>
+                                <p class="text-sm" data-translate="aiAdvice1">"Based on your location and crop, you're eligible for PM-KISAN (₹2,000 due March) and should consider crop insurance before monsoon."</p>
                             </div>
                             <div class="bg-white bg-opacity-10 rounded-lg p-4">
-                                <p class="text-sm">"Weather alert: Heavy rain expected next week. Harvest ready crops and check insurance coverage."</p>
+                                <p class="text-sm" data-translate="aiAdvice2">"Weather alert: Heavy rain expected next week. Harvest ready crops and check insurance coverage."</p>
                             </div>
                         </div>
 
-                        <button onclick="openAIAssistant()" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold mt-6 hover:bg-gray-100 transition">
+                        <button onclick="openAIAssistant()" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold mt-6 hover:bg-gray-100 transition" data-translate="tryAiAssistant">
                             Try AI Assistant
                         </button>
                     </div>
@@ -432,10 +432,10 @@
     <section class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4" data-translate="successStories">
                     Real <span class="text-green-600">Success Stories</span>
                 </h2>
-                <p class="text-xl text-gray-600">See how farmers are transforming their lives with KrishiMitra</p>
+                <p class="text-xl text-gray-600" data-translate="transformingLives">See how farmers are transforming their lives with KrishiMitra</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -444,11 +444,11 @@
                         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
                              alt="Farmer" class="w-12 h-12 rounded-full">
                         <div>
-                            <h3 class="font-semibold text-gray-800">Rajesh Kumar</h3>
-                            <p class="text-sm text-gray-600">Wheat Farmer, UP</p>
+                            <h3 class="font-semibold text-gray-800" data-translate="rajeshKumar">Rajesh Kumar</h3>
+                            <p class="text-sm text-gray-600" data-translate="wheatFarmer">Wheat Farmer, UP</p>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4">"KrishiMitra helped me get ₹1.2L loan against my wheat WHR in just 24 hours. Plus, I got my PM-KISAN payment on time!"</p>
+                    <p class="text-gray-600 mb-4" data-translate="rajeshStory">"KrishiMitra helped me get ₹1.2L loan against my wheat WHR in just 24 hours. Plus, I got my PM-KISAN payment on time!"</p>
                     <div class="flex items-center space-x-4 text-sm">
                         <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full">Loan: ₹1.2L</span>
                         <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full">PM-KISAN: ₹6K</span>
@@ -460,11 +460,11 @@
                         <img src="https://images.unsplash.com/photo-1494790108755-2616b734b3c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
                              alt="Farmer" class="w-12 h-12 rounded-full">
                         <div>
-                            <h3 class="font-semibold text-gray-800">Sunita Devi</h3>
-                            <p class="text-sm text-gray-600">Rice Farmer, Bihar</p>
+                            <h3 class="font-semibold text-gray-800" data-translate="sunitaDevi">Sunita Devi</h3>
+                            <p class="text-sm text-gray-600" data-translate="riceFarmer">Rice Farmer, Bihar</p>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4">"The crop auction feature got me 15% higher price than local mandi. The AI assistant also saved my crop from pest attack."</p>
+                    <p class="text-gray-600 mb-4" data-translate="sunitaStory">"The crop auction feature got me 15% higher price than local mandi. The AI assistant also saved my crop from pest attack."</p>
                     <div class="flex items-center space-x-4 text-sm">
                         <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full">Price: +15%</span>
                         <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full">AI Alert</span>
@@ -476,11 +476,11 @@
                         <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
                              alt="Farmer" class="w-12 h-12 rounded-full">
                         <div>
-                            <h3 class="font-semibold text-gray-800">Prakash Patil</h3>
-                            <p class="text-sm text-gray-600">Cotton Farmer, Maharashtra</p>
+                            <h3 class="font-semibold text-gray-800" data-translate="prakashPatil">Prakash Patil</h3>
+                            <p class="text-sm text-gray-600" data-translate="cottonFarmer">Cotton Farmer, Maharashtra</p>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4">"All my documents in DocuLocker made KCC application super easy. Got approved in 2 days instead of weeks!"</p>
+                    <p class="text-gray-600 mb-4" data-translate="prakashStory">"All my documents in DocuLocker made KCC application super easy. Got approved in 2 days instead of weeks!"</p>
                     <div class="flex items-center space-x-4 text-sm">
                         <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full">KCC: ₹2L</span>
                         <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full">2 Days</span>
@@ -494,8 +494,10 @@
     <section class="py-20 bg-gradient-to-r from-blue-600 to-green-600 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4">Choose Your Role & Start Your Journey</h2>
-                <p class="text-xl opacity-90">Access features designed specifically for your role in the agricultural ecosystem</p>
+                <h2 class="text-4xl font-bold mb-4" data-translate="chooseRole">
+                    Choose Your Role & Start Your Journey
+                </h2>
+                <p class="text-xl opacity-90" data-translate="accessFeatures">Access features designed specifically for your role in the agricultural ecosystem</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -504,29 +506,29 @@
                     <div class="w-20 h-20 bg-green-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-user-tie text-white text-3xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">I'm a Farmer</h3>
-                    <p class="opacity-90 mb-6">Access loans, government schemes, auctions, and AI advisory services.</p>
+                    <h3 class="text-2xl font-bold mb-4" data-translate="imFarmer">I'm a Farmer</h3>
+                    <p class="opacity-90 mb-6" data-translate="farmerAccess">Access loans, government schemes, auctions, and AI advisory services.</p>
                     
                     <div class="space-y-3 mb-8 text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-green-400"></i>
-                            <span>Apply for WHR-based loans</span>
+                            <span data-translate="applyWhrLoans">Apply for WHR-based loans</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-green-400"></i>
-                            <span>Check government scheme eligibility</span>
+                            <span data-translate="checkSchemeEligibility">Check government scheme eligibility</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-green-400"></i>
-                            <span>Participate in crop auctions</span>
+                            <span data-translate="participateAuctions">Participate in crop auctions</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-green-400"></i>
-                            <span>Get AI-powered advisory</span>
+                            <span data-translate="getAiAdvisory">Get AI-powered advisory</span>
                         </div>
                     </div>
 
-                    <a href="auth.html?role=farmer" class="bg-green-400 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-300 transition inline-block w-full">
+                    <a href="auth.html?role=farmer" class="bg-green-400 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-300 transition inline-block w-full" data-translate="enterAsFarmer">
                         Enter as Farmer
                     </a>
                 </div>
@@ -536,29 +538,29 @@
                     <div class="w-20 h-20 bg-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <i class="fas fa-warehouse text-white text-3xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">I'm a Warehouse Manager</h3>
-                    <p class="opacity-90 mb-6">Manage inventory, generate WHRs, and oversee warehouse operations.</p>
+                    <h3 class="text-2xl font-bold mb-4" data-translate="imWarehouseManager">I'm a Warehouse Manager</h3>
+                    <p class="opacity-90 mb-6" data-translate="warehouseAccess">Manage inventory, generate WHRs, and oversee warehouse operations.</p>
                     
                     <div class="space-y-3 mb-8 text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-blue-400"></i>
-                            <span>Generate digital WHRs</span>
+                            <span data-translate="generateWhrs">Generate digital WHRs</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-blue-400"></i>
-                            <span>Manage inventory & deposits</span>
+                            <span data-translate="manageInventory">Manage inventory & deposits</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-blue-400"></i>
-                            <span>Track loan collaterals</span>
+                            <span data-translate="trackCollaterals">Track loan collaterals</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-check text-blue-400"></i>
-                            <span>Update warehouse settings</span>
+                            <span data-translate="updateSettings">Update warehouse settings</span>
                         </div>
                     </div>
 
-                    <a href="auth.html?role=warehouse" class="bg-blue-400 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-300 transition inline-block w-full">
+                    <a href="auth.html?role=warehouse" class="bg-blue-400 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-300 transition inline-block w-full" data-translate="enterAsWarehouseManager">
                         Enter as Warehouse Manager
                     </a>
                 </div>
@@ -566,8 +568,8 @@
 
             <!-- Demo Access -->
             <div class="text-center mt-12">
-                <p class="text-lg opacity-90 mb-4">Want to explore first?</p>
-                <button onclick="startDemo()" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition">
+                <p class="text-lg opacity-90 mb-4" data-translate="exploreFirst">Want to explore first?</p>
+                <button onclick="startDemo()" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition" data-translate="tryDemo">
                     <i class="fas fa-play mr-2"></i>Try Interactive Demo
                 </button>
             </div>
@@ -584,11 +586,11 @@
                             <i class="fas fa-seedling text-white"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold">KrishiMitra</h3>
-                            <p class="text-sm opacity-75">Powered by Deutsche Bank</p>
+                            <h3 class="text-xl font-bold" data-translate="krishiMitra">KrishiMitra</h3>
+                            <p class="text-sm opacity-75" data-translate="poweredByDb">Powered by Deutsche Bank</p>
                         </div>
                     </div>
-                    <p class="text-gray-400 mb-4">Transforming agriculture through digital innovation and financial inclusion.</p>
+                    <p class="text-gray-400 mb-4" data-translate="transformingAgriculture">Transforming agriculture through digital innovation and financial inclusion.</p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook"></i></a>
                         <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
@@ -598,7 +600,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <h4 class="text-lg font-semibold mb-4" data-translate="services">Services</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="#" class="hover:text-white transition">WHR-Based Lending</a></li>
                         <li><a href="#" class="hover:text-white transition">Crop Auctions</a></li>
@@ -608,7 +610,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Government Schemes</h4>
+                    <h4 class="text-lg font-semibold mb-4" data-translate="governmentSchemes">Government Schemes</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="#" class="hover:text-white transition">PM-KISAN</a></li>
                         <li><a href="#" class="hover:text-white transition">Kisan Credit Card</a></li>
@@ -618,7 +620,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <h4 class="text-lg font-semibold mb-4" data-translate="support">Support</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="#" class="hover:text-white transition">Help Center</a></li>
                         <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
@@ -630,7 +632,7 @@
 
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; 2025 KrishiMitra. Powered by Deutsche Bank. All rights reserved.</p>
-                <p class="mt-2 text-sm">Part of India's Digital Agriculture Mission | Government Approved Financial Services</p>
+                <p class="mt-2 text-sm" data-translate="digitalMission">Part of India's Digital Agriculture Mission | Government Approved Financial Services</p>
             </div>
         </div>
     </footer>
