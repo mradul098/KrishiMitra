@@ -315,6 +315,8 @@ app.post('/api/auth/login', async (req, res) => {
             accountBalance: user.accountBalance,
             creditScore: user.creditScore
         };
+        req.session.userId = user.userId;   // <-- make bot endpoints happy
+
         
         res.json({
             success: true,
@@ -1049,7 +1051,7 @@ app.post('/api/warehouse/generate-whr', authenticateUser, authorizeRole(['wareho
 });
 
 // Chat endpoint
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', authenticateUser ,async (req, res) => {
     try {
         const { message, location, language = 'en', threadId } = req.body;
         
@@ -1061,7 +1063,8 @@ app.post('/api/chat', async (req, res) => {
                 error: 'Chat service not ready. Please try again in a few moments.'
             });
         }
-        
+        console.log('Session user in /api/chat:', req.session.user);
+
         // Get user context if authenticated
         let userContext = '';
         if (req.session && req.session.user) {

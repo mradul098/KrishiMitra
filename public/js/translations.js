@@ -203,6 +203,22 @@ const translations = {
         investment: "निवेश",
         farmers: "किसान",
         
+        // Government Scheme Names
+        pmKisan: "पीएम किसान",
+        kisanCreditCard: "किसान क्रेडिट कार्ड",
+        pmFasalBima: "पीएम फसल बीमा",
+        agriStack: "एग्री स्टैक",
+        
+        // Government Scheme Descriptions
+        pmKisanDescription: "प्रधानमंत्री किसान सम्मान निधि योजना",
+        kisanCreditCardDescription: "कृषि ऋण के लिए क्रेडिट कार्ड",
+        pmFasalBimaDescription: "फसल बीमा योजना",
+        agriStackDescription: "कृषि प्रौद्योगिकी पारिस्थितिकी तंत्र",
+        
+        // Scheme Details
+        interestRate: "ब्याज दर",
+        withPRI: "पीआरआई के साथ",
+        
         // Chatbot
         chatAssistant: "कृषिमित्र सहायक",
         language: "भाषा",
@@ -405,6 +421,22 @@ const translations = {
         investment: "गुंतवणूक",
         farmers: "शेतकरी",
         
+        // Government Scheme Names
+        pmKisan: "पीएम किसान",
+        kisanCreditCard: "किसान क्रेडिट कार्ड",
+        pmFasalBima: "पीएम फसल बीमा",
+        agriStack: "एग्री स्टॅक",
+        
+        // Government Scheme Descriptions
+        pmKisanDescription: "पंतप्रधान किसान सन्मान निधी योजना",
+        kisanCreditCardDescription: "शेती कर्जासाठी क्रेडिट कार्ड",
+        pmFasalBimaDescription: "पीक विमा योजना",
+        agriStackDescription: "कृषी तंत्रज्ञान परिसंस्था",
+        
+        // Scheme Details
+        interestRate: "व्याज दर",
+        withPRI: "पीआरआय सह",
+        
         // Chatbot
         chatAssistant: "कृषिमित्र सहाय्यक",
         language: "भाषा",
@@ -526,14 +558,30 @@ class LanguageManager {
         
         elementsToTranslate.forEach(element => {
             const key = element.getAttribute('data-translate');
+            
+            // Store original text if not already stored
+            if (!element.hasAttribute('data-original-text')) {
+                if (element.tagName === 'INPUT' && element.type !== 'button') {
+                    element.setAttribute('data-original-text', element.placeholder || '');
+                } else if (element.tagName === 'INPUT' && element.type === 'button') {
+                    element.setAttribute('data-original-text', element.value || '');
+                } else {
+                    element.setAttribute('data-original-text', element.textContent || '');
+                }
+            }
+            
             const translation = this.translate(key);
+            const originalText = element.getAttribute('data-original-text');
+            
+            // Use translation if found, otherwise use original text
+            const textToUse = (translation === key) ? originalText : translation;
             
             if (element.tagName === 'INPUT' && element.type !== 'button') {
-                element.placeholder = translation;
+                element.placeholder = textToUse;
             } else if (element.tagName === 'INPUT' && element.type === 'button') {
-                element.value = translation;
+                element.value = textToUse;
             } else {
-                element.textContent = translation;
+                element.textContent = textToUse;
             }
         });
         

@@ -862,14 +862,18 @@ function loadAccountSettings() {
 // Chatbot functions
 function toggleChatbot() {
     chatbotOpen = !chatbotOpen;
-    const panel = document.getElementById('chatbotPanel');
-    
+    const panel      = document.getElementById('chatbotPanel');
+    const toggleBtn  = document.getElementById('chatbotToggle');   // ← the green FAB
+
     if (chatbotOpen) {
         panel.classList.add('open');
+        toggleBtn.style.display = 'none';          // hide button
     } else {
         panel.classList.remove('open');
+        toggleBtn.style.display = 'block';         // show again
     }
 }
+
 
 function handleChatKeyPress(event) {
     if (event.key === 'Enter') {
@@ -922,13 +926,14 @@ async function sendChatMessage() {
                     // If action was successful, also update the dashboard
                     if (actionResult.success && actionResult.action) {
                         refreshDashboardAfterAction(actionResult.action);
+                        return;
                     }
                     
                     return; // Don't proceed to normal chat
                 }
             } catch (error) {
                 console.error('Action execution error:', error);
-                // Fall through to normal chat
+                return;
             }
         }
     } else {

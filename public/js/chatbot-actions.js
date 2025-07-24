@@ -25,7 +25,7 @@ class ChatbotActionService {
                 'what whrs do i have', 'my warehouse receipts', 'show whrs', 'list whrs',
                 'list all the whr', 'show all my whrs', 'all my whrs', 'my whrs',
                 'warehouse receipts', 'whr list', 'show warehouse receipts',
-                'मेरे डब्ल्यूएचआर दिखाओ', 'मेरी वेयरहाउस रसीदें दिखाओ'
+                'मेरे डब्ल्यूएचआर दिखाओ', 'मेरी वेयरहाउस रसीदें दिखाओ', 'mera whr dikhao'
             ],
             
             // Loan related
@@ -158,42 +158,45 @@ class ChatbotActionService {
     
     // WHR Actions
     async handleViewWHRs() {
-        console.log('Fetching WHRs from API...');
-        try {
-            const response = await fetch('/api/farmer/whr', {
-                method: 'GET',
-                credentials: 'include'
-            });
-            
-            console.log('WHR API response status:', response.status);
-            
-            if (response.ok) {
-                const whrs = await response.json();
-                console.log('Retrieved WHRs:', whrs);
-                return {
-                    success: true,
-                    action: 'viewWHRs',
-                    message: `You have ${whrs.length} warehouse receipt(s):`,
-                    data: whrs
-                };
-            } else {
-                const errorText = await response.text();
-                console.error('WHR API error:', errorText);
-                return {
-                    success: false,
-                    message: `Unable to fetch your WHRs. Error: ${response.status}`,
-                    data: null
-                };
-            }
-        } catch (error) {
-            console.error('Network error fetching WHRs:', error);
+    console.log('Fetching WHRs from API.');
+    try {
+        const response = await fetch('/api/farmer/whrs', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        console.log('WHR API response status:', response.status);
+
+        if (response.ok) {
+            // The API returns { success:true, whrs:[…] }
+            const { whrs = [] } = await response.json();
+            console.log('Retrieved WHRs:', whrs.length);
+
+            return {
+                success: true,
+                action: 'viewWHRs',
+                message: `You have ${whrs.length} warehouse receipt${whrs.length !== 1 ? 's' : ''}:`,
+                data: whrs
+            };
+        } else {
+            const errorText = await response.text();
+            console.error('WHR API error:', errorText);
             return {
                 success: false,
-                message: 'Network error. Please check your connection and try again.',
+                message: `Unable to fetch your WHRs. Error: ${response.status}`,
                 data: null
             };
         }
+    } catch (error) {
+        console.error('Network error fetching WHRs:', error);
+        return {
+            success: false,
+            message: 'Network error. Please check your connection and try again.',
+            data: null
+        };
     }
+}
+
     
     // Loan Actions
     async handleViewLoans() {
@@ -221,7 +224,7 @@ class ChatbotActionService {
     
     async handleApplyLoan(message) {
         // First get available WHRs
-        const whrResponse = await fetch('/api/whr/farmer', {
+        const whrResponse = await fetch('/api/farmer/whrs', {
             method: 'GET',
             credentials: 'include'
         });
@@ -521,33 +524,43 @@ class ChatMessageRenderer {
     }
     
     static renderWHRList(whrs) {
-        if (whrs.length === 0) {
-            return '<div class="text-gray-500 mt-2">No warehouse receipts found.</div>';
-        }
-        
-        let html = '<div class="mt-3 space-y-2 max-h-40 overflow-y-auto">';
-        whrs.forEach(whr => {
-            const statusColor = whr.status === 'active' ? 'green' : 
-                               whr.status === 'locked_for_loan' ? 'yellow' : 'gray';
-            html += `
-                <div class="bg-gray-50 p-3 rounded border">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="font-medium">${whr.cropType} (${whr.quantity} kg)</div>
-                            <div class="text-sm text-gray-600">Quality: ${whr.quality} | Value: ₹${whr.estimatedValue}</div>
-                            <div class="text-sm text-gray-600">Warehouse: ${whr.warehouseId}</div>
-                        </div>
-                        <span class="text-xs px-2 py-1 rounded bg-${statusColor}-100 text-${statusColor}-600">
-                            ${whr.status.replace('_', ' ')}
-                        </span>
-                    </div>
-                </div>
-            `;
-        });
-        html += '</div>';
-        
-        return html;
+    if (whrs.length === 0) {
+        return '<div class="text-gray-500 mt-2">No warehouse receipts found.</div>';
     }
+
+    let html = '<div class="mt-3 space-y-2 max-h-40 overflow-y-auto">';
+    whrs.forEach(whr => {
+        // Normalise field names coming from the API
+        const cropType  = whr.cropDetails?.cropType        || whr.cropType        || '—';
+        const quantity  = whr.cropDetails?.quantity        || whr.quantity        || '—';
+        const quality   = whr.cropDetails?.qualityGrade    || whr.quality         || '—';
+        const estValue  = whr.financialDetails?.estimatedValue ?? whr.estimatedValue ?? '—';
+        const warehouse = whr.warehouseDetails?.warehouseName || whr.warehouseId   || '—';
+        const status    = whr.status || 'unknown';
+
+        const statusColor =
+            status === 'active'          ? 'green'  :
+            status === 'locked_for_loan' ? 'yellow' :
+            status === 'sold'            ? 'blue'   : 'gray';
+
+        html += `
+            <div class="bg-gray-50 p-3 rounded border">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-medium">${cropType} (${quantity} kg)</div>
+                        <div class="text-sm text-gray-600">Quality: ${quality} | Value: ₹${estValue}</div>
+                        <div class="text-sm text-gray-600">Warehouse: ${warehouse}</div>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded bg-${statusColor}-100 text-${statusColor}-600">
+                        ${status.replace(/_/g, ' ')}
+                    </span>
+                </div>
+            </div>`;
+    });
+    html += '</div>';
+    return html;
+}
+
     
     static renderLoanList(loans) {
         if (loans.length === 0) {
