@@ -1,45 +1,27 @@
-# Build stage
-FROM node:18-alpine as builder
-
-# Set working directory
+################ 1. Base image  ################
+FROM node:20-alpine AS base
 WORKDIR /app
 
-# Copy package files
+################ 2. Install dependencies  ################
+# copy only the manifests first to leverage Docker layer‑cache
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# install prod deps (add --omit=dev if you keep dev deps separate)
+RUN npm ci --omit=dev
 
-# Copy source code
+################ 3. Copy source code  ################
 COPY . .
 
-# Production stage
-FROM node:18-alpine
-
-# Install production dependencies only
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Copy built files from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/server.js .
-COPY --from=builder /app/models ./models
-
-# Create non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
-
-# Environment variables
+################ 4. Environment & runtime settings  ################
+# You’ll pass real values at run‑time or via docker‑compose
 ENV NODE_ENV=production \
     PORT=3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
+EXPOSE 3000
 
-# Expose port
-EXPOSE ${PORT}
+################ 5. Non‑root user for security  ################
+# node user is built‑in on node:<version>-alpine
+USER node
 
-# Start command
+################ 6. Start the server  ################
 CMD ["node", "server.js"]
